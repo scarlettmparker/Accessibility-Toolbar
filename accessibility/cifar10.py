@@ -1,6 +1,5 @@
 import os
 import numpy as np
-import tensorflow as tf
 import keras
 from keras import regularizers
 from keras.preprocessing.image import ImageDataGenerator
@@ -10,7 +9,6 @@ from keras.callbacks import EarlyStopping
 from keras.models import Sequential
 from keras.layers import Dense, Flatten, Activation, Conv2D, MaxPooling2D, BatchNormalization, Dropout
 from tensorflow.keras.utils import to_categorical
-from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from datasets import load_dataset
 
@@ -28,13 +26,10 @@ test_images = np.array(dataset['test']['img'])
 train_images = train_images.reshape(-1, IMG_SIZE, IMG_SIZE, 3) / 255.0
 test_images = test_images.reshape(-1, IMG_SIZE, IMG_SIZE, 3) / 255.0
 
-# class_names = ['plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
-
 label_encoder = LabelEncoder()
 train_captions_encoded = label_encoder.fit_transform(dataset['train']['label'])
 test_captions_encoded = label_encoder.transform(dataset['test']['label'])
 
-# convert integer labels to one-hot encoding
 train_captions_categorical = to_categorical(train_captions_encoded)
 test_captions_categorical = to_categorical(test_captions_encoded)
 
@@ -42,58 +37,9 @@ def lr_schedule(epoch):
     lr = 0.001
     if epoch > 75:
         lr = 0.0005
-    elif epoch > 100:
+    if epoch > 100:
         lr = 0.0003
     return lr
-
-
-'''
-I'll be going through multiple different models to see which is most effective
-in terms of highest accuracy, lowest loss etc. Some are commented out meaning
-that they were used but weren't as effective as others.
-'''
-
-'''
-activation = 'relu'
-model = Sequential()
-model.add(Conv2D(16, (3, 3), activation=activation, padding='same', input_shape=(IMG_SIZE, IMG_SIZE, 3)))
-model.add(BatchNormalization())
-model.add(MaxPooling2D())
-
-model.add(Conv2D(32, (3, 3), activation=activation, padding='same'))
-model.add(BatchNormalization())
-model.add(MaxPooling2D())
-
-model.add(Conv2D(64, (3, 3), activation=activation, padding='same'))
-model.add(BatchNormalization())
-model.add(MaxPooling2D())
-
-model.add(Flatten())
-model.add(Dense(256, activation=activation))
-model.add(Dense(10, activation='softmax'))
-'''
-
-'''
-activation = 'sigmoid'
-model = Sequential()
-model.add(Conv2D(32, 3, activation = activation, padding = 'same', input_shape = (32, 32, 3)))
-model.add(BatchNormalization())
-
-model.add(Conv2D(32, 3, activation = activation, padding = 'same', kernel_initializer = 'he_uniform'))
-model.add(BatchNormalization())
-model.add(MaxPooling2D())
-
-model.add(Conv2D(64, 3, activation = activation, padding = 'same', kernel_initializer = 'he_uniform'))
-model.add(BatchNormalization())
-
-model.add(Conv2D(64, 3, activation = activation, padding = 'same', kernel_initializer = 'he_uniform'))
-model.add(BatchNormalization()) 
-model.add(MaxPooling2D())
-
-model.add(Flatten())
-model.add(Dense(128, activation = activation, kernel_initializer = 'he_uniform'))
-model.add(Dense(10, activation = 'softmax'))
-'''
 
 weight_decay = 1e-4
 model = Sequential()
@@ -132,7 +78,6 @@ model.compile(optimizer=opt_rms, loss='categorical_crossentropy', metrics=['accu
 
 model.summary()
 
-# image generator for augmentation
 datagen = ImageDataGenerator(rotation_range=15,
     width_shift_range=0.1,
     height_shift_range=0.1,
@@ -143,7 +88,7 @@ augmented_data_gen = datagen.flow(train_images, train_captions_categorical, batc
 learning_rate_scheduler = LearningRateScheduler(lr_schedule)
 early_stopping = EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True)
 
-filepath="saved_models/weights-improvement-{epoch:02d}-{val_accuracy:.2f}.keras" #includes epoch and validation accuracy.
+filepath="saved_models/weights-improvement-{epoch:02d}-{val_accuracy:.2f}.keras" #includes epoch and validation accuracy
 checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, mode='max')
 callbacks_list = [checkpoint, learning_rate_scheduler]
 
@@ -157,4 +102,4 @@ history = model.fit(augmented_data_gen,
                     validation_steps=validation_batches,
                     callbacks=callbacks_list)
 
-model.save('saved_models/1 - cifar10/accessibility_cifar10.keras')
+model.save('saved_models/1 - cifar10/accessibility_cifar10-2.keras')
