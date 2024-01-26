@@ -107,8 +107,8 @@ datagen = ImageDataGenerator(featurewise_center=False,
 early_stopping = EarlyStopping(monitor='val_loss',
                                patience=10,
                                restore_best_weights=True)
-filepath="saved_models/2 - cifar100/weights-improvement-"
-+ "{epoch:02d}-{val_accuracy:.2f}.keras" # includes epoch and validation acc.
+filepath="saved_models/2 - cifar100/weights-improvement-\
+    {epoch:02d}-{val_accuracy:.2f}.keras" # includes epoch and validation acc.
 checkpoint = ModelCheckpoint(filepath,
                              verbose=1,
                              save_best_only=True,
