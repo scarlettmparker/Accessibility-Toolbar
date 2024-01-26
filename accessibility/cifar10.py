@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import keras
+import tensorflow as tf
 from keras import regularizers
 from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import ModelCheckpoint
@@ -14,7 +15,7 @@ from datasets import load_dataset
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-batch_size = 64
+batch_size = 32
 IMG_SIZE = 32
 
 dataset = load_dataset("parquet", data_files={'train': 'datasets/cifar10/plain_text/train-00000-of-00001.parquet',
@@ -32,14 +33,6 @@ test_captions_encoded = label_encoder.transform(dataset['test']['label'])
 
 train_captions_categorical = to_categorical(train_captions_encoded)
 test_captions_categorical = to_categorical(test_captions_encoded)
-
-def lr_schedule(epoch):
-    lr = 0.001
-    if epoch > 75:
-        lr = 0.0005
-    if epoch > 100:
-        lr = 0.0003
-    return lr
 
 weight_decay = 1e-4
 model = Sequential()
@@ -68,7 +61,7 @@ model.add(Conv2D(128, (3,3), padding='same', kernel_regularizer=regularizers.l2(
 model.add(Activation('elu'))
 model.add(BatchNormalization())
 model.add(MaxPooling2D(pool_size=(2,2)))
-model.add(Dropout(0.4))
+model.add(Dropout(0.5))
 
 model.add(Flatten())
 model.add(Dense(10, activation='softmax'))
@@ -78,28 +71,38 @@ model.compile(optimizer=opt_rms, loss='categorical_crossentropy', metrics=['accu
 
 model.summary()
 
-datagen = ImageDataGenerator(rotation_range=15,
-    width_shift_range=0.1,
-    height_shift_range=0.1,
-    horizontal_flip=True,)
+datagen = ImageDataGenerator(featurewise_center=False,
+        samplewise_center=False,
+        featurewise_std_normalization=False,
+        samplewise_std_normalization=False,
+        zca_whitening=False,
+        rotation_range=20,
+        zoom_range = 0,
+        shear_range=0,
+        width_shift_range=0,
+        height_shift_range=0,
+        horizontal_flip=True,
+        vertical_flip=False,
+        validation_split=0.2)
 
-augmented_data_gen = datagen.flow(train_images, train_captions_categorical, batch_size=batch_size)
-
-learning_rate_scheduler = LearningRateScheduler(lr_schedule)
 early_stopping = EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True)
+filepath="saved_models/1 - cifar10-100/weights-improvement-{epoch:02d}-{val_accuracy:.2f}.keras" # includes epoch and validation accuracy
+checkpoint = ModelCheckpoint(filepath, verbose=1, save_best_only=True, mode='min')
+reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.5, patience=4, min_lr=1e-6)
 
-filepath="saved_models/weights-improvement-{epoch:02d}-{val_accuracy:.2f}.keras" #includes epoch and validation accuracy
-checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, mode='max')
-callbacks_list = [checkpoint, learning_rate_scheduler]
+callbacks_list = [checkpoint, reduce_lr]
 
 train_batches = len(train_images) // batch_size
 validation_batches = len(test_images) // batch_size
-history = model.fit(augmented_data_gen,
-                    batch_size=batch_size,
-                    epochs=125,
-                    steps_per_epoch=train_batches,
-                    validation_data=(test_images, test_captions_categorical),
-                    validation_steps=validation_batches,
-                    callbacks=callbacks_list)
 
-model.save('saved_models/1 - cifar10/accessibility_cifar10-2.keras')
+history = model.fit(
+    datagen.flow(train_images, train_captions_categorical, batch_size=batch_size),
+    batch_size=batch_size,
+    epochs=135,
+    verbose=1,
+    validation_data=(test_images, test_captions_categorical),
+    shuffle=True,
+    callbacks=callbacks_list
+)
+
+model.save('saved_models/1 - cifar10/accessibility_cifar10.keras')
