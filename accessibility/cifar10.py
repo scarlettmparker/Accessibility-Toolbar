@@ -41,33 +41,33 @@ model = Sequential()
 model.add(Conv2D(32, (3,3), padding='same',
                  kernel_regularizer=regularizers.l2(weight_decay),
                  input_shape=(IMG_SIZE, IMG_SIZE, 3)))
-model.add(Activation('relu'))
+model.add(Activation('elu'))
 model.add(BatchNormalization()) # more overfitting prevention
 model.add(Conv2D(32, (3,3), padding='same',
                  kernel_regularizer=regularizers.l2(weight_decay)))
-model.add(Activation('relu'))
+model.add(Activation('elu'))
 model.add(BatchNormalization())
 model.add(MaxPooling2D(pool_size=(2,2)))
 model.add(Dropout(0.2))
  
 model.add(Conv2D(64, (3,3), padding='same',
                  kernel_regularizer=regularizers.l2(weight_decay)))
-model.add(Activation('relu'))
+model.add(Activation('elu'))
 model.add(BatchNormalization())
 model.add(Conv2D(64, (3,3), padding='same',
                  kernel_regularizer=regularizers.l2(weight_decay)))
-model.add(Activation('relu'))
+model.add(Activation('elu'))
 model.add(BatchNormalization())
 model.add(MaxPooling2D(pool_size=(2,2)))
 model.add(Dropout(0.3))
  
 model.add(Conv2D(128, (3,3), padding='same',
                  kernel_regularizer=regularizers.l2(weight_decay)))
-model.add(Activation('relu'))
+model.add(Activation('elu'))
 model.add(BatchNormalization())
 model.add(Conv2D(128, (3,3), padding='same',
                  kernel_regularizer=regularizers.l2(weight_decay)))
-model.add(Activation('relu'))
+model.add(Activation('elu'))
 model.add(BatchNormalization())
 model.add(MaxPooling2D(pool_size=(2,2)))
 model.add(Dropout(0.5))
@@ -75,7 +75,7 @@ model.add(Dropout(0.5))
 model.add(Flatten())
 model.add(Dense(10, activation='softmax')) # matches number of classes in set
 
-opt = keras.optimizers.Adam(lr=0.001)
+opt = keras.optimizers.RMSprop(lr=0.001)
 model.compile(optimizer=opt,
               loss='categorical_crossentropy', metrics=['accuracy'])
 
@@ -101,7 +101,7 @@ datagen = ImageDataGenerator(featurewise_center=False,
 early_stopping = EarlyStopping(monitor='val_loss',
                                patience=10,
                                restore_best_weights=True)
-filepath = "saved_models/1 - cifar10-100/weights-improvement-\
+filepath = "saved_models/1 - cifar10/weights-improvement-\
     {epoch:02d}-{val_accuracy:.2f}.keras"
 checkpoint = ModelCheckpoint(filepath, verbose=1,
                              save_best_only=True,
