@@ -1,28 +1,35 @@
 {
   "manifest_version": 3,
-  "name": "testing",
+  "name": "Accessibility Toolbar",
   "version": "1.0",
-  "description": "A testing extension!",
+  "description": "Dissertation Accessibility Toolbar",
   "content_scripts": [
     {
       "matches": [
         "<all_urls>"
       ],
-      "js": ["content.js", "jquery-3.7.1.min.js"]
+      "css": ["toolbar/toolbar.css"],
+      "js": ["toolbar/toolbar.js", "jquery-3.7.1.min.js"]
     }
   ],
   "icons": {
-      "128": "icon128.png",
-      "48": "icon48.png",
-      "16": "icon16.png"
+      "128": "icons/icon128.png",
+      "48": "icons/icon48.png",
+      "16": "icons/icon16.png"
   },
   "action": {
-      "default_icon": "icon16.png",
+      "default_icon": "icons/icon16.png",
       "default_popup": "popup.html",
       "default_title": "Detect image tags"
   },
   "permissions": [],
   "background": {
     "script": ["background.js", "jquery-3.7.1.min.js"]
-  }
+  },
+  "web_accessible_resources": [
+	{
+	  "resources": ["toolbar/assets/buttons/*"],
+	  "matches": ["<all_urls>"]
+	}
+  ]
 }

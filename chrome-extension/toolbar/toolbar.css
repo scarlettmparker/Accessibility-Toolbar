@@ -1,0 +1,154 @@
+body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+}
+
+.T-EXT-toolbar {
+	width: 40vw;
+	height: 75px;
+	background-color: #FFFFFF;
+	box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
+	border: 0.1rem solid rgba(216, 216, 216, 1.00);
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	margin: auto;
+	z-index: 2147483647;
+	transition: height 0.3s ease;
+	transition: width 0.3s ease;
+}
+
+.T-EXT-buttons-left-wrapper {
+	float: left;
+}
+
+.T-EXT-buttons-left {
+	display: grid;
+	grid-template-columns: repeat(6, 1fr);
+	grid-template-rows: 1fr;
+	grid-column-gap: 0px;
+	grid-row-gap: 0px;
+	margin-left: 5px;
+}
+
+.T-EXT-buttons-right-wrapper {
+	float: right;
+}
+
+.T-EXT-buttons-right {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	grid-template-rows: 1fr;
+	grid-column-gap: 0px;
+	grid-row-gap: 0px;
+	margin-right: 5px;
+}
+
+.T-EXT-button {
+	width: 100%;
+	height: 100%;
+	border: none;
+}
+
+.T-EXT-grid-item {
+	width: 55px;
+	height: 55px;
+	margin: 10px 5px 5px 5px;
+}
+
+@media screen and (max-width: 1495px) {
+	.T-EXT-toolbar {
+		width: 50vw;
+	}
+}
+
+@media screen and (max-width: 1200px) {
+	.T-EXT-toolbar {
+		width: 60vw;
+	}
+}
+
+@media screen and (max-width: 1000px) {
+	.T-EXT-toolbar {
+		width: 70vw;
+	}
+}
+
+@media screen and (max-width: 855px) {
+	.T-EXT-toolbar {
+		width: 80vw;
+	}
+}
+
+@media screen and (max-width: 750px) {
+	.T-EXT-toolbar {
+		height: 65px;
+	}
+	
+	.T-EXT-grid-item {
+		width: 45px;
+		height: 45px;
+	}
+}
+
+@media screen and (max-width: 635px) {
+	.T-EXT-toolbar {
+		width: 100vw;
+	}
+}
+
+@media screen and (max-width: 510px) {
+	.T-EXT-toolbar {
+		height: 10.5vw;
+	}
+	
+	.T-EXT-grid-item {
+		margin: 0px 1px 0px 1px;
+		width: 10.5vw;
+		height: 10.5vw;
+	}
+	
+	.T-EXT-buttons-left {
+		margin-left: 0px;
+	}
+	
+	.T-EXT-buttons-right {
+		margin-right: 0px;
+	}
+	
+	.T-EXT-toolbar {
+		background-color: rgba(255,255,255, 0.8)
+	}
+}
+
+@media screen and (max-width: 365px) {
+	.T-EXT-toolbar {
+		height: 10vw;
+	}
+	
+	.T-EXT-grid-item {
+		margin: 0px 1px 0px 1px;
+		width: 10vw;
+		height: 10vw;
+	}
+	
+	.T-EXT-buttons-left {
+		margin-left: 0px;
+	}
+	
+	.T-EXT-buttons-right {
+		margin-right: 0px;
+	}
+	
+	.T-EXT-toolbar {
+		background-color: rgba(255,255,255, 0.6)
+	}
+}
+
+@media screen and (max-width: 200px) {
+	.T-EXT-toolbar {
+		visibility: hidden;
+	}
+}
