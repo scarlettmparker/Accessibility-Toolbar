@@ -8,7 +8,7 @@
       "matches": [
         "<all_urls>"
       ],
-      "css": ["toolbar/toolbar.css"],
+      "css": ["toolbar/toolbar.css", "toolbar/text.css"],
       "js": ["toolbar/toolbar.js", "jquery-3.7.1.min.js"]
     }
   ],
@@ -28,8 +28,9 @@
   },
   "web_accessible_resources": [
 	{
-	  "resources": ["toolbar/assets/buttons/*"],
+	  "resources": ["toolbar/assets/buttons/*", "toolbar/scripts/*.js"],
 	  "matches": ["<all_urls>"]
 	}
   ]
 }
+
