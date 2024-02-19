@@ -82,10 +82,19 @@ function resetToInitialState() {
 function changeText(increase, modify) {
     const scaleFactor = increase ? 1.1 : 0.9;
     const spacingFactor = increase ? 0.2 : -0.2;
-    
-    const elementsWithText = document.querySelectorAll('*:not(script):not(style):not(meta):not(title):not(link):not(br):not(hr):not(img):not(input):not(button):not(select):not(option):not(textarea):not(canvas):not([aria-hidden="true"])');
 
-    elementsWithText.forEach(element => {
+    const elementsToUpdate = [];
+    const elementsWithModifiedText = new Set();
+
+    const ignoredElements = ['script', 'style', 'meta', 'title', 'link', 'br', 'hr', 'img', 'input', 'button', 'select', 'option', 'textarea', 'canvas'];
+
+    function isIgnoredElement(element) {
+        return ignoredElements.includes(element.tagName.toLowerCase()) || element.hasAttribute('aria-hidden');
+    }
+
+    document.querySelectorAll('*').forEach(element => {
+        if (isIgnoredElement(element)) return;
+
         switch (modify) {
             case "fs":
                 elementsToUpdate.push({ element: element, property: 'fontSize', value: parseFloat(window.getComputedStyle(element).fontSize) });
@@ -94,24 +103,18 @@ function changeText(increase, modify) {
                 elementsToUpdate.push({ element: element, property: 'lineHeight', value: parseFloat(window.getComputedStyle(element).lineHeight) });
                 break;
             case "cs":
-                let currentValue = parseFloat(window.getComputedStyle(element).letterSpacing) || 0;
-                element.style.letterSpacing = Math.max(0, currentValue + spacingFactor) + 'px';
+				elementsToUpdate.push({ element: element, property: 'letterSpacing', value: (parseFloat(window.getComputedStyle(element).letterSpacing) || 0) });
                 break;
             case "ff":
-				console.log("hi");
-                if (increase === "Default") { 
-                    resetToInitialState(); 
-                } else { 
-                    element.style.fontFamily = increase; 
-                    elementsWithModifiedText.push(element);
+                if (increase !== "Default") {
+                    element.style.fontFamily = increase;
+                    elementsWithModifiedText.add(element);
                 }
                 break;
             case "fc":
-                if (increase === "Default") { 
-                    resetToInitialState(); 
-                } else { 
-                    element.style.color = increase; 
-                    elementsWithModifiedText.push(element);
+                if (increase !== "Default") {
+                    element.style.color = increase;
+                    elementsWithModifiedText.add(element);
                 }
                 break;
         }
@@ -120,7 +123,10 @@ function changeText(increase, modify) {
     elementsToUpdate.forEach(({ element, property, value }) => {
         if (modify === 'fs' || modify === 'lh') {
             const newValue = value * scaleFactor;
-            element.style[property] = newValue + (property === 'fontSize' ? 'px' : '');
-        }
+            element.style[property] = newValue + 'px';
+        } else if (modify === 'cs') {
+			const newValue = value + spacingFactor;
+			element.style[property] = newValue + 'px';
+		}
     });
 }
