@@ -12,7 +12,7 @@ export function populateMenu() {
     const gridKey = ["Font Face:", "dd-ff", "Font Colour:", "dd-fc", "Font Size:", "b-m-fs",
 	"b-p-fs","Line Height:","b-m-lh", "b-p-lh", "Character Spacing:", "b-m-cs", "b-p-cs"];
 	
-	const fonts = ["Default", "Arial", "Courier New", "Georgia", "Helvetica", "Lucida Sans Unicode", "Tahoma", "Times New Roman", "Trebuchet MS", "Verdana"];
+	const fonts = ["Default", "Arial", "Comic Sans MS", "Courier New", "Georgia", "Helvetica", "Lucida Sans Unicode", "Times New Roman", "Trebuchet MS", "Verdana"];
 	const colors = ["Default", "Black", "Blue", "Fuchsia", "Gray", "Green", "Lime", "Maroon", "Navy", "Olive", "Purple", "Red", "Silver", "Teal", "White", "Yellow"];
 	
     for (let i = 0; i < 13; i++) {
@@ -84,7 +84,6 @@ function changeText(increase, modify) {
     const spacingFactor = increase ? 0.2 : -0.2;
 
     const elementsToUpdate = [];
-    const elementsWithModifiedText = new Set();
 
     const ignoredElements = ['script', 'style', 'meta', 'title', 'link', 'br', 'hr', 'img', 'input', 'button', 'select', 'option', 'textarea', 'canvas'];
 
@@ -106,15 +105,19 @@ function changeText(increase, modify) {
 				elementsToUpdate.push({ element: element, property: 'letterSpacing', value: (parseFloat(window.getComputedStyle(element).letterSpacing) || 0) });
                 break;
             case "ff":
-                if (increase !== "Default") {
-                    element.style.fontFamily = increase;
-                    elementsWithModifiedText.add(element);
+                if (increase === "Default") { 
+                    resetToInitialState(); 
+                } else { 
+                    element.style.fontFamily = increase; 
+                    elementsWithModifiedText.push(element);
                 }
                 break;
             case "fc":
-                if (increase !== "Default") {
-                    element.style.color = increase;
-                    elementsWithModifiedText.add(element);
+                if (increase === "Default") { 
+                    resetToInitialState(); 
+                } else { 
+                    element.style.color = increase; 
+                    elementsWithModifiedText.push(element);
                 }
                 break;
         }
