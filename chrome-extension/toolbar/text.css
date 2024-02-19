@@ -45,4 +45,11 @@
 	background-color: #4E9ADF;
     width: 40px;
     height: 40px;
+	border: none;
+}
+
+.T-EXT-text-dropdown {
+	font-family: "Inter", sans-serif;
+	font-size: 16px;
+	height: 30px;
 }

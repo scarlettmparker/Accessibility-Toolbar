@@ -97,12 +97,18 @@ async function generateButtons(grid, columns, inc) {
     const filePath = "toolbar/assets/buttons/";
 
     for (let i = inc; i < columns + inc; i++) {
+        const menuName = menus[i];
+        const altText = menuName.charAt(0).toUpperCase() + menuName.slice(1);
+        
         const buttonDiv = createElement("div", ["T-EXT-grid-item"], null, { position: "relative" });
         const buttonItem = createElement("button", ["T-EXT-button"], null, { 
             backgroundImage: `url(${await getButtonImage(i, filePath)})`, 
             backgroundSize: "cover",
-            backgroundColor: `#${buttonColors[i]}`
+            backgroundColor: `#${buttonColors[i]}`,
         });
+
+        buttonItem.dataset.altText = altText;
+
         const hoverURL = chrome.runtime.getURL(filePath + "hover/" + i + ".png");
         
         buttonItem.addEventListener('mouseover', () => setBackground(buttonItem, i, 0));

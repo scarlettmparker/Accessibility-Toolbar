@@ -1,19 +1,28 @@
+let initialState = {
+    fontColor: "",
+    fontFamily: ""
+};
+
+let elementsWithModifiedText = [];
+
+window.addEventListener('load', storeInitialState);
 const menu = document.getElementById("T-EXT-text-menu");
 
 export function populateMenu() {
     const gridKey = ["Font Face:", "dd-ff", "Font Colour:", "dd-fc", "Font Size:", "b-m-fs",
 	"b-p-fs","Line Height:","b-m-lh", "b-p-lh", "Character Spacing:", "b-m-cs", "b-p-cs"];
 	
-	const fonts = ["Arial", "Comic Sans", "Helvetica"];
-	const colors = ["Black", "Red", "Blue", "Green", "Yellow"];
+	const fonts = ["Default", "Arial", "Courier New", "Georgia", "Helvetica", "Lucida Sans Unicode", "Tahoma", "Times New Roman", "Trebuchet MS", "Verdana"];
+	const colors = ["Default", "Black", "Blue", "Fuchsia", "Gray", "Green", "Lime", "Maroon", "Navy", "Olive", "Purple", "Red", "Silver", "Teal", "White", "Yellow"];
 	
     for (let i = 0; i < 13; i++) {
         const gridItem = createElement("div", ["T-EXT-text-" + i]);
         if (gridKey[i].startsWith("dd-")) {
-			if (gridKey[i].slice(3, 5) == "ff") {
-				gridItem.appendChild(createDropDown(fonts));
-			} else if (gridKey[i].slice(3, 5) == "fc") {
-				gridItem.appendChild(createDropDown(colors));
+			const dropDownType = gridKey[i].slice(3, 5)
+			if (dropDownType == "ff") {
+				gridItem.appendChild(createDropDown(fonts, dropDownType));
+			} else if (dropDownType == "fc") {
+				gridItem.appendChild(createDropDown(colors, dropDownType));
 			}
         } else if (gridKey[i].startsWith("b-")) {
             gridItem.classList.add("T-EXT-text-grid-input");
@@ -36,40 +45,82 @@ export function populateMenu() {
     }
 }
 
-function createDropDown(optionList) {
-	const dropDown = document.createElement("select");
+function createDropDown(optionList, dropDownType) {
+	const dropDown = document.createElement("select")
 	dropDown.classList.add("T-EXT-text-dropdown");
 	
 	optionList.forEach(function(optionText, index) {
 		const option = document.createElement("option");
-		option.setAttribute("value", "option", (index + 1));
+		option.setAttribute("value", optionText, (index + 1));
 		option.appendChild(document.createTextNode(optionText));
 		dropDown.appendChild(option);
+	});
+	
+	dropDown.style.width = "120px";
+	dropDown.addEventListener("change", function() {
+		changeText(dropDown.value, dropDownType);
 	});
 	return dropDown;
 }
 
-function changeText(increase, modify) {
-    const scaleFactorTextSize = increase ? 1.04 : 0.925;
-	const scaleFactorLineHeight = increase ? 1.08 : 0.925;
-    const spacingFactor = increase ? 0.2 : -0.2;
+function storeInitialState() {
     const elementsWithText = document.querySelectorAll('*:not(script):not(style):not(meta):not(title):not(link):not(br):not(hr):not(img):not(input):not(textarea):not(select):not(option):not(area):not(map):not(canvas):not(svg):not(iframe):not(object):not(embed):not(audio):not(video)');
-  
     elementsWithText.forEach(element => {
-        let currentValue;
+        initialState.fontColor = element.style.color || window.getComputedStyle(element).color;
+        initialState.fontFamily = element.style.fontFamily || window.getComputedStyle(element).fontFamily;
+    });
+}
+
+function resetToInitialState() {
+    elementsWithModifiedText.forEach(element => {
+        element.style.color = initialState.fontColor;
+        element.style.fontFamily = initialState.fontFamily;
+    });
+    elementsWithModifiedText = [];
+}
+
+function changeText(increase, modify) {
+    const scaleFactor = increase ? 1.1 : 0.9;
+    const spacingFactor = increase ? 0.2 : -0.2;
+    
+    const elementsWithText = document.querySelectorAll('*:not(script):not(style):not(meta):not(title):not(link):not(br):not(hr):not(img):not(input):not(button):not(select):not(option):not(textarea):not(canvas):not([aria-hidden="true"])');
+
+    elementsWithText.forEach(element => {
         switch (modify) {
             case "fs":
-                currentValue = parseFloat(element.style.fontSize) || parseFloat(window.getComputedStyle(element).fontSize);
-                element.style.fontSize = Math.max(1, currentValue * scaleFactorTextSize) + 'px';
+                elementsToUpdate.push({ element: element, property: 'fontSize', value: parseFloat(window.getComputedStyle(element).fontSize) });
                 break;
             case "lh":
-                currentValue = parseFloat(element.style.lineHeight) || parseFloat(window.getComputedStyle(element).lineHeight);
-                element.style.lineHeight = Math.max(1, currentValue * scaleFactorLineHeight) + 'px';
+                elementsToUpdate.push({ element: element, property: 'lineHeight', value: parseFloat(window.getComputedStyle(element).lineHeight) });
                 break;
             case "cs":
-                currentValue = parseFloat(element.style.letterSpacing) || 0;
+                let currentValue = parseFloat(window.getComputedStyle(element).letterSpacing) || 0;
                 element.style.letterSpacing = Math.max(0, currentValue + spacingFactor) + 'px';
                 break;
+            case "ff":
+				console.log("hi");
+                if (increase === "Default") { 
+                    resetToInitialState(); 
+                } else { 
+                    element.style.fontFamily = increase; 
+                    elementsWithModifiedText.push(element);
+                }
+                break;
+            case "fc":
+                if (increase === "Default") { 
+                    resetToInitialState(); 
+                } else { 
+                    element.style.color = increase; 
+                    elementsWithModifiedText.push(element);
+                }
+                break;
+        }
+    });
+
+    elementsToUpdate.forEach(({ element, property, value }) => {
+        if (modify === 'fs' || modify === 'lh') {
+            const newValue = value * scaleFactor;
+            element.style[property] = newValue + (property === 'fontSize' ? 'px' : '');
         }
     });
 }
