@@ -85,15 +85,7 @@ function changeText(increase, modify) {
 
     const elementsToUpdate = [];
 
-    const ignoredElements = ['script', 'style', 'meta', 'title', 'link', 'br', 'hr', 'img', 'input', 'button', 'select', 'option', 'textarea', 'canvas'];
-
-    function isIgnoredElement(element) {
-        return ignoredElements.includes(element.tagName.toLowerCase()) || element.hasAttribute('aria-hidden');
-    }
-
     document.querySelectorAll('*').forEach(element => {
-        if (isIgnoredElement(element)) return;
-
         switch (modify) {
             case "fs":
                 elementsToUpdate.push({ element: element, property: 'fontSize', value: parseFloat(window.getComputedStyle(element).fontSize) });
@@ -108,7 +100,7 @@ function changeText(increase, modify) {
                 if (increase === "Default") { 
                     resetToInitialState(); 
                 } else { 
-                    element.style.fontFamily = increase; 
+                    element.style.fontFamily = increase;
                     elementsWithModifiedText.push(element);
                 }
                 break;

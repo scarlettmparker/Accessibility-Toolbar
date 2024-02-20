@@ -1,0 +1,47 @@
+#T-EXT-translate-menu {
+	box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+	border: 0.1rem solid rgba(216, 216, 216, 1);
+}
+
+.T-EXT-translate-menu-wrapper {
+	position: relative;
+	height: 90%;
+	display: grid;
+	grid-template-columns: 1fr;
+	grid-template-rows: repeat(9, 1fr);
+	grid-column-gap: 0px;
+	grid-row-gap: 0px;
+	align-items: center;
+	top: 50%;
+	transform: translateY(-50%);
+	overflow-y: auto;
+}
+
+.T-EXT-translate-grid-input {
+
+}
+
+.T-EXT-translate-node {
+	font-family: "Inter", sans-serif;
+	font-size: 18px;
+	margin-left: 18px;
+}
+
+.T-EXT-translate-button {
+	margin-top: 7px;
+	margin-bottom: 7px;
+	margin-left: 18px;
+	font-family: "Inter", sans-serif;
+	font-size: 18px;
+	color: white;
+	background-color: #4E4E4E;
+    width: 240px;
+    height: 46px;
+	border: none;
+	text-align: left;
+	padding-left: 15px;
+}
+
+.T-EXT-translate-button:hover {
+	background-color: #232323;
+}
