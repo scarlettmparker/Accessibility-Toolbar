@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class AccessibilityConfig(AppConfig):
+class DjangoProjectConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'accessibility'
+    name = 'django-project'
