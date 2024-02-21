@@ -4,6 +4,8 @@ let originalState = {
     elements: []
 };
 
+var isDark = 0;
+
 function populateOriginalColorsAndElements() {
     const elements = document.querySelectorAll('*');
     originalState.elements = Array.from(elements);
@@ -45,6 +47,7 @@ export function populateMenu() {
 }
 
 async function changeTheme(theme) {
+    isDark = 0;
     var textModify = chrome.runtime.getURL("toolbar/scripts/text.js");
     textModify = await import(textModify);
     if (theme === 'custom') {
@@ -64,6 +67,7 @@ async function changeTheme(theme) {
             if (theme === '#FFFFFF') {
                 newColor = originalColor;
             } else if (theme === '#232323') {
+                isDark = 1;
                 const originalHSL = rgbToHsl(originalColor);
                 let h = (originalHSL.h + 180) % 360;
                 let s = 0;
@@ -83,10 +87,9 @@ async function changeTheme(theme) {
             element.style.backgroundColor = newColor;
         }
     });
-    if (theme === "#232323") {
+    if (isDark == 1) {
         textModify.changeText("White", "fc");
-    }
-    if (theme === '#FFFFFF') {
+    } else {
         textModify.changeText("Default", "fc");
     }
 }
