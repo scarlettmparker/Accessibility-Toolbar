@@ -1,53 +1,125 @@
 const menu = document.getElementById("T-EXT-theme-menu");
+let originalState = {
+    colors: new Map(),
+    elements: []
+};
+
+function populateOriginalColorsAndElements() {
+    const elements = document.querySelectorAll('*');
+    originalState.elements = Array.from(elements);
+    originalState.elements.forEach(element => {
+        const computedStyle = window.getComputedStyle(element);
+        const backgroundColor = computedStyle.backgroundColor;
+        originalState.colors.set(element, backgroundColor); 
+    });
+}
 
 export function populateMenu() {
-	const themes = [
+    const themes = [
+        { name: "Default", color: "#FFFFFF"},
         { name: "Black", color: "#232323" },
         { name: "Red", color: "#FF0000" },
         { name: "Green", color: "#00FF00" },
-        { name: "Blue", color: "#0000FF" }
+        { name: "Blue", color: "#0000FF" },
+        { name: "Yellow", color: "#FFFF00" },
+        { name: "Pink", color: "#800080" },
+        { name: "Orange", color: "#FFA500" },
+        { name: "Pink", color: "#FFC0CB" },
     ];
-	const gridWrapper = createElement("div", ["T-EXT-theme-menu-wrapper"]);
-	menu.appendChild(gridWrapper);
-    for (let i = 0; i < 5; i++) {
+    const gridWrapper = createElement("div", ["T-EXT-theme-menu-wrapper"]);
+    menu.appendChild(gridWrapper);
+    populateOriginalColorsAndElements();
+    for (let i = 0; i < themes.length; i++) {
         const gridItem = createElement("div", ["T-EXT-theme-" + i]);
         gridItem.classList.add("T-EXT-theme-grid-input");
         const currentButton = document.createElement('button');
-		currentButton.classList.add("T-EXT-theme-button");
-		if (i < 4) {
-			currentButton.textContent = 'Theme ' + themes[i];
-			currentButton.addEventListener("click", function() {
-				changeTheme(themes[i].color);
-			});
-		} else {
-			currentButton.textContent = 'Custom Colour';
-			currentButton.addEventListener("click", function() {
-				customTheme();
-			});
-		}
-		gridItem.appendChild(currentButton);
+        currentButton.classList.add("T-EXT-theme-button");
+        currentButton.textContent = i < themes.length - 1 ? 'Theme ' + themes[i].name : 'Custom Colour';
+        currentButton.addEventListener("click", function () {
+            changeTheme(themes[i].color);
+        });
+
+        gridItem.appendChild(currentButton);
         gridWrapper.appendChild(gridItem);
     }
 }
 
-function changeTheme(theme) {
-    console.log("change theme " + theme);
-    document.body.style.background = theme;
-
-    const elements = document.querySelectorAll('body, div, header, section, article, footer, h1, h2, h3, h4, h5, h6, p, pre, ul, ol, li, blockquote, table, th, td, form, input, button, textarea, select, hr');
-    
-    elements.forEach(element => {
-        // Check if the element has a solid background and is visible
-        const computedStyle = window.getComputedStyle(element);
-        const backgroundColor = computedStyle.backgroundColor;
-        const visibility = computedStyle.visibility;
-
-        if (backgroundColor && backgroundColor !== 'rgba(0, 0, 0, 0)' && visibility !== 'hidden') {
-            element.style.backgroundColor = theme;
+async function changeTheme(theme) {
+    var textModify = chrome.runtime.getURL("toolbar/scripts/text.js");
+    textModify = await import(textModify);
+    if (theme === 'custom') {
+        console.log('Custom color button pressed');
+        return;
+    }
+    const themeHSL = rgbToHsl(theme);
+    originalState.elements.forEach(element => {
+        // can be removed, just make sure it doesnt affect the toolbar
+        let className = String(element.className);
+        if (className.startsWith("T-EXT-")) {
+            return;
+        }
+        const originalColor = originalState.colors.get(element);
+        if (originalColor && originalColor !== 'transparent' && !originalColor.startsWith('rgba(0, 0, 0, 0)')) {
+            let newColor;
+            if (theme === '#FFFFFF') {
+                newColor = originalColor;
+            } else if (theme === '#232323') {
+                const originalHSL = rgbToHsl(originalColor);
+                // Invert the color by adjusting the hue by +180 degrees
+                let h = (originalHSL.h + 180) % 360;
+                // Convert to grayscale by setting saturation to 0%
+                let s = 0;
+                // Invert the lightness
+                let l = 100 - originalHSL.l;
+                // Ensure that no color is black but at a minimum #232323
+                l = l * (100 - 13.5) / 100 + 24.5;
+                newColor = `hsl(0, ${s}%, ${l}%)`;
+            } else if (originalColor === 'rgb(255, 255, 255)') {
+                newColor = `hsl(${themeHSL.h}, ${themeHSL.s}%, 90%)`;
+            } else if (originalColor === 'rgb(0, 0, 0)') {
+                const originalHSL = rgbToHsl(originalColor);
+                newColor = `hsl(${themeHSL.h}, ${originalHSL.s}%, ${originalHSL.l}%)`;
+                newColor = `hsl(${themeHSL.h}, ${themeHSL.s}%, 10%)`;
+            } else {
+                const originalHSL = rgbToHsl(originalColor);
+                newColor = `hsl(${themeHSL.h}, ${originalHSL.s}%, ${originalHSL.l}%)`;
+            }
+            element.style.backgroundColor = newColor;
         }
     });
+    if (theme === "#232323") {
+        textModify.changeText("White", "fc");
+    }
+    if (theme === '#FFFFFF') {
+        textModify.changeText("Default", "fc");
+    }
 }
 
-function customTheme() {
-    console.log("custom theme");
+function rgbToHsl(color) {
+    let r, g, b;
+    if (color.startsWith('rgb')) {
+        [r, g, b] = color.match(/\d+/g).map(num => parseInt(num) / 255);
+    } else if (color.startsWith('#')) {
+        const hex = color.substring(1);
+        r = parseInt(hex.substring(0, 2), 16) / 255;
+        g = parseInt(hex.substring(2, 4), 16) / 255;
+        b = parseInt(hex.substring(4, 6), 16) / 255;
+    } else {
+        return null;
+    }
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h, s, l = (max + min) / 2;
+    if (max === min) {
+        h = s = 0;
+    } else {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / d + 2; break;
+            case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+    }
+    return { h: h * 360, s: s * 100, l: l * 100 };
 }

@@ -5,12 +5,17 @@ var resizeCheck = 0;
 
 const menus = ["play", "text", "theme", "dictionary", "translate", "magnify", "info", "settings", "hide"];
 const buttonColors = ["4b2699", "4079ad", "2ea32c", "b82a7f", "b62a3a", "16959d", "707070", "707070", "ffffff"];
-const hoverColors = ["411d81", "265793", "1a8719", "a1175e", "9e1722", "0c767f", "4e4e4e", "4e4e4e", "ffffff"];
+const hoverColors = ["411d81", "265793", "1a8719", "a1175e", "9e1722", "0c767f", "4e4e4e", "4e4e4e", "f1f1f1"];
 
 var toolbarOpen = 1;
 addToolbar();
 
 window.addEventListener('resize', debounce(handleResize, 75));
+window.onload = function() {
+    for (let i = 0; i < menus.length; i++) {
+        sessionStorage.removeItem(`menuLoaded_${i}`);
+    }
+}
 
 function debounce(func, delay) {
     let timerId;
@@ -23,6 +28,10 @@ function debounce(func, delay) {
 }
 
 async function handleResize() {
+    const toolbar = document.getElementById("T-EXT-toolbar");
+    if (toolbar.style.visibility === "hidden") {
+        return;
+    }
     try {
 	    const tempMenu = document.getElementById(`T-EXT-${menus[currentMenu]}-menu`);
 	    const button = document.querySelectorAll(".T-EXT-button")[currentMenu];
@@ -55,13 +64,17 @@ async function handleResize() {
 }
 
 async function populateMenu(index) {
+    // check if the page is fully loaded
+    if (document.readyState !== 'complete') {
+        setTimeout(() => populateMenu(index), 100);
+        return;
+    }
+
     const tempMenu = chrome.runtime.getURL("toolbar/scripts/" + menus[index] + ".js");
-	// wait for the function to be returned
     const contentMain = await import(tempMenu);
     contentMain.populateMenu();
-    menusLoaded[index] = 1;
+    sessionStorage.setItem(`menuLoaded_${index}`, '1');
 }
-
 async function addToolbar() {
     const toolbar = createToolbar();
     document.body.insertBefore(toolbar, document.body.firstChild);
@@ -108,8 +121,6 @@ async function generateButtons(grid, columns, inc) {
         });
 
         buttonItem.dataset.altText = altText;
-
-        const hoverURL = chrome.runtime.getURL(filePath + "hover/" + i + ".png");
         
         buttonItem.addEventListener('mouseover', () => setBackground(buttonItem, i, 0));
         buttonItem.addEventListener('mouseleave', () => setBackground(buttonItem, i, 1));
@@ -130,15 +141,15 @@ function setBackground(button, index, type) {
     button.style.backgroundColor = `#${color}`;
 }
 
-function showButtonMenu(index, resize) {
+async function showButtonMenu(index, resize) {
     const tempMenu = document.getElementById(`T-EXT-${menus[index]}-menu`);
     const button = document.querySelectorAll(".T-EXT-button")[index];
 
     if (index !== 8) {
-		toggleMenuVisibility(tempMenu);
-		if (tempMenu.style.visibility == "visible") { currentMenu = index; }
+        toggleMenuVisibility(tempMenu);
+        if (tempMenu.style.visibility == "visible") { currentMenu = index; }
 
-        if (menusLoaded[index] == 0) {
+        if (sessionStorage.getItem(`menuLoaded_${index}`) !== '1') {
             populateMenu(index);
         }
 
@@ -162,7 +173,27 @@ function showButtonMenu(index, resize) {
 			tempMenu.style.marginRight = "auto";
 		}
     } else {
-        // TODO: implement hide toolbar
+        const filePath = "toolbar/assets/buttons/";
+        const toolbar = document.getElementById("T-EXT-toolbar");
+        toolbar.style.visibility = toolbarOpen ? "hidden" : "visible";
+        if (toolbarOpen) {
+            // ensure all menus close with toolbar
+            for (let i = 0; i < 9; i++) {
+                const tempMenu = document.getElementById(`T-EXT-${menus[i]}-menu`);
+                tempMenu.style.visibility = "hidden";
+            }
+            toolbarOpen = 0;
+            const reOpenButton = createElement("button", ["T-EXT-button", "T-EXT-reopen-button"], "T-EXT-reopen-button", {
+                backgroundImage: `url(${await getButtonImage(9, filePath)})`, 
+                backgroundSize: "cover",
+            });
+            reOpenButton.dataset.altText = "Reopen Toolbar";
+            reOpenButton.addEventListener('click', () => showButtonMenu(8));
+            document.body.insertBefore(reOpenButton, document.body.firstChild);
+        } else {
+            toolbarOpen = 1;
+            document.getElementById("T-EXT-reopen-button").remove();
+        }
     }
 }
 

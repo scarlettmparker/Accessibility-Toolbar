@@ -8,17 +8,12 @@
 	height: 90%;
 	display: grid;
 	grid-template-columns: 1fr;
-	grid-template-rows: repeat(9, 1fr);
 	grid-column-gap: 0px;
 	grid-row-gap: 0px;
 	align-items: center;
 	top: 50%;
 	transform: translateY(-50%);
 	overflow-y: auto;
-}
-
-.T-EXT-translate-grid-input {
-
 }
 
 .T-EXT-translate-node {

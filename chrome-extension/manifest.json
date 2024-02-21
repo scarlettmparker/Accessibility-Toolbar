@@ -9,7 +9,7 @@
         "<all_urls>"
       ],
       "css": ["toolbar/toolbar.css", "toolbar/text.css", "toolbar/theme.css", "toolbar/translate.css"],
-      "js": ["toolbar/toolbar.js", "jquery-3.7.1.min.js"]
+      "js": ["toolbar/toolbar.js"]
     }
   ],
   "icons": {
@@ -22,7 +22,9 @@
       "default_popup": "popup.html",
       "default_title": "Detect image tags"
   },
-  "permissions": [],
+  "permissions": [
+      "storage"
+  ],
   "background": {
     "script": ["background.js", "jquery-3.7.1.min.js"]
   },

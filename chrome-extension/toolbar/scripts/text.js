@@ -5,7 +5,12 @@ let initialState = {
 
 let elementsWithModifiedText = [];
 
-window.addEventListener('load', storeInitialState);
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", storeInitialState);
+} else {
+    storeInitialState();
+}
+
 const menu = document.getElementById("T-EXT-text-menu");
 
 export function populateMenu() {
@@ -66,8 +71,11 @@ function createDropDown(optionList, dropDownType) {
 function storeInitialState() {
     const elementsWithText = document.querySelectorAll('*:not(script):not(style):not(meta):not(title):not(link):not(br):not(hr):not(img):not(input):not(textarea):not(select):not(option):not(area):not(map):not(canvas):not(svg):not(iframe):not(object):not(embed):not(audio):not(video)');
     elementsWithText.forEach(element => {
-        initialState.fontColor = element.style.color || window.getComputedStyle(element).color;
-        initialState.fontFamily = element.style.fontFamily || window.getComputedStyle(element).fontFamily;
+        const computedStyle = window.getComputedStyle(element);
+        if (computedStyle.backgroundImage === 'none' && computedStyle.backgroundColor === 'transparent') {
+            initialState.fontColor = element.style.color || computedStyle.color;
+            initialState.fontFamily = element.style.fontFamily || computedStyle.fontFamily;
+        }
     });
 }
 
@@ -79,13 +87,18 @@ function resetToInitialState() {
     elementsWithModifiedText = [];
 }
 
-function changeText(increase, modify) {
+export function changeText(increase, modify) {
     const scaleFactor = increase ? 1.1 : 0.9;
     const spacingFactor = increase ? 0.2 : -0.2;
 
     const elementsToUpdate = [];
 
     document.querySelectorAll('*').forEach(element => {
+        // can be removed, just make sure it doesnt affect the toolbar
+        let className = String(element.className);
+        if (className.startsWith("T-EXT-") || element.tagName.toLowerCase() === "body") {
+            return;
+        }
         switch (modify) {
             case "fs":
                 elementsToUpdate.push({ element: element, property: 'fontSize', value: parseFloat(window.getComputedStyle(element).fontSize) });
@@ -97,21 +110,14 @@ function changeText(increase, modify) {
 				elementsToUpdate.push({ element: element, property: 'letterSpacing', value: (parseFloat(window.getComputedStyle(element).letterSpacing) || 0) });
                 break;
             case "ff":
-                if (increase === "Default") { 
-                    resetToInitialState(); 
-                } else { 
-                    element.style.fontFamily = increase;
-                    elementsWithModifiedText.push(element);
-                }
-                break;
             case "fc":
-                if (increase === "Default") { 
-                    resetToInitialState(); 
-                } else { 
-                    element.style.color = increase; 
-                    elementsWithModifiedText.push(element);
-                }
-                break;
+            if (increase === "Default") { 
+                resetToInitialState(); 
+            } else { 
+                element.style[modify === "ff" ? "fontFamily" : "color"] = increase;
+                elementsWithModifiedText.push(element);
+            }
+            break;
         }
     });
 
