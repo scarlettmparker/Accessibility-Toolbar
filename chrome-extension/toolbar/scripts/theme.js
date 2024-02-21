@@ -65,14 +65,10 @@ async function changeTheme(theme) {
                 newColor = originalColor;
             } else if (theme === '#232323') {
                 const originalHSL = rgbToHsl(originalColor);
-                // Invert the color by adjusting the hue by +180 degrees
                 let h = (originalHSL.h + 180) % 360;
-                // Convert to grayscale by setting saturation to 0%
                 let s = 0;
-                // Invert the lightness
                 let l = 100 - originalHSL.l;
-                // Ensure that no color is black but at a minimum #232323
-                l = l * (100 - 13.5) / 100 + 24.5;
+                l = l * (100 - 13.5) / 100 + 13.5;
                 newColor = `hsl(0, ${s}%, ${l}%)`;
             } else if (originalColor === 'rgb(255, 255, 255)') {
                 newColor = `hsl(${themeHSL.h}, ${themeHSL.s}%, 90%)`;

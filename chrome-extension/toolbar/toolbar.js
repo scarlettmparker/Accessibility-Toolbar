@@ -87,6 +87,13 @@ async function addToolbar() {
 }
 
 function createToolbar() {
+    //const toolbar = createElement("div", ["T-EXT-global", "T-EXT-toolbar"], "T-EXT-toolbar");
+    /*
+    TODO:
+    - Change toolbar to iframe
+    - Add all buttons to iframe
+    */
+
 	// divs for css use
     const toolbar = createElement("div", ["T-EXT-global", "T-EXT-toolbar"], "T-EXT-toolbar");
     const buttonLWrapper = createElement("div", ["T-EXT-buttons-left-wrapper"]);
