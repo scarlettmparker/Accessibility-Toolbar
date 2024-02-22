@@ -1,18 +1,3 @@
-.T-EXT-toolbar,
-.T-EXT-global,
-.T-EXT-button-menu,
-.T-EXT-buttons-left-wrapper,
-.T-EXT-buttons-left,
-.T-EXT-buttons-right-wrapper,
-.T-EXT-buttons-right,
-.T-EXT-button,
-.T-EXT-button::after,
-.T-EXT-grid-item,
-.T-EXT-reopen-button {
-	all: initial;
-	/* Add your styles here */
-}
-
 .T-EXT-toolbar {
 	width: 650px;
 	height: 75px;
