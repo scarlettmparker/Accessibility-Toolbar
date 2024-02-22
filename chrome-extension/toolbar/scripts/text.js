@@ -82,7 +82,7 @@ function storeInitialState() {
 function resetToInitialState() {
     elementsWithModifiedText.forEach(element => {
         element.style.setProperty("color", initialState.fontColor, "");
-        element.style.setProperty("fontFamily", initialState.fontFamily, "");
+        element.style.fontFamily = initialState.fontFamily;
     });
     elementsWithModifiedText = [];
 }
@@ -110,11 +110,18 @@ export function changeText(increase, modify) {
                 elementsToUpdate.push({ element: element, property: 'letterSpacing', value: (parseFloat(window.getComputedStyle(element).letterSpacing) || 0) });
                 break;
             case "ff":
+                if (increase === "Default") {
+                    resetToInitialState();
+                } else {
+                    element.style.fontFamily = increase;
+                    elementsWithModifiedText.push(element);
+                }
+                break;
             case "fc":
                 if (increase === "Default") {
                     resetToInitialState();
                 } else {
-                    element.style.setProperty(modify === "ff" ? "fontFamily" : "color", increase, "important");
+                    element.style.setProperty("color", increase, "important");
                     elementsWithModifiedText.push(element);
                 }
                 break;
@@ -124,10 +131,10 @@ export function changeText(increase, modify) {
     elementsToUpdate.forEach(({ element, property, value }) => {
         if (modify === 'fs' || modify === 'lh') {
             const newValue = value * scaleFactor;
-            element.style.setProperty(property, newValue + 'px', "important");
+            element.style[property] = newValue + 'px';
         } else if (modify === 'cs') {
             const newValue = value + spacingFactor;
-            element.style.setProperty(property, newValue + 'px', "important");
+            element.style[property] = newValue + 'px';
         }
     });
 }
