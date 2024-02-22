@@ -30,7 +30,7 @@
   },
   "web_accessible_resources": [
 	{
-	  "resources": ["toolbar/assets/buttons/*", "toolbar/scripts/*.js"],
+	  "resources": ["toolbar/assets/buttons/*", "toolbar/scripts/*.js", "toolbar/assets/languages/supported_languages.json"],
 	  "matches": ["<all_urls>"]
 	}
   ]

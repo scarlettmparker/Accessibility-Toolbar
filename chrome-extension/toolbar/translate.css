@@ -5,15 +5,15 @@
 
 .T-EXT-translate-menu-wrapper {
 	position: relative;
-	height: 90%;
+	height: auto;
+	max-height: 80%;
 	display: grid;
 	grid-template-columns: 1fr;
 	grid-column-gap: 0px;
 	grid-row-gap: 0px;
-	align-items: center;
-	top: 50%;
-	transform: translateY(-50%);
-	overflow-y: auto;
+	align-items: start;
+	justify-items: center;
+	overflow-y: scroll;
 }
 
 .T-EXT-translate-node {
@@ -25,18 +25,30 @@
 .T-EXT-translate-button {
 	margin-top: 7px;
 	margin-bottom: 7px;
-	margin-left: 18px;
 	font-family: "Inter", sans-serif;
 	font-size: 18px;
 	color: white;
 	background-color: #4E4E4E;
-	width: 240px;
+	width: 280px;
 	height: 46px;
+	box-sizing: border-box;
 	border: none;
 	text-align: left;
 	padding-left: 15px;
+	cursor: pointer;
 }
 
 .T-EXT-translate-button:hover {
 	background-color: #232323;
+}
+
+.T-EXT-translate-search-bar {
+	place-items: center;
+	margin-top: 14px;
+	margin-bottom: 7px;
+	margin-left: 18px;
+	font-family: "Inter", sans-serif;
+	font-size: 18px;
+	text-align: left;
+	padding-left: 10px;
 }

@@ -6,17 +6,51 @@ let originalState = {
 
 var isDark = 0;
 
-function populateOriginalColorsAndElements() {
-    const elements = document.querySelectorAll('*');
-    originalState.elements = Array.from(elements);
-    originalState.elements.forEach(element => {
-        const computedStyle = window.getComputedStyle(element);
+if (document.readyState === "loading") {
+    window.addEventListener("load", populateOriginalColorsAndElements);
+} else {
+    populateOriginalColorsAndElements();
+}
+
+function observeDOMChanges() {
+    // Create a new observer
+    const observer = new MutationObserver((mutationsList, observer) => {
+        for(let mutation of mutationsList) {
+            if (mutation.type === 'childList') {
+                populateOriginalColorsAndElements();
+            }
+        }
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+}
+
+async function populateOriginalColorsAndElements() {
+    const allElements = document.querySelectorAll('*');
+
+    allElements.forEach(element => {
+        // if the current element is the body tag, skip it
+        if (element === document.body) {
+            return;
+        }
+
+        // if the element is already in originalState, skip it
+        if (originalState.elements.includes(element)) {
+            return;
+        }
+
+        const computedStyle = getComputedStyle(element);
         const backgroundColor = computedStyle.backgroundColor;
-        originalState.colors.set(element, backgroundColor);
+
+        if (backgroundColor !== 'transparent' && !backgroundColor.startsWith('rgba(0, 0, 0, 0)')) {
+            originalState.elements.push(element);
+            originalState.colors.set(element, backgroundColor);
+        }
     });
 }
 
 export function populateMenu() {
+    observeDOMChanges();
     const themes = [
         { name: "Default", color: "#FFFFFF" },
         { name: "Black", color: "#232323" },
@@ -30,7 +64,6 @@ export function populateMenu() {
     ];
     const gridWrapper = createElement("div", ["T-EXT-theme-menu-wrapper"]);
     menu.appendChild(gridWrapper);
-    populateOriginalColorsAndElements();
     for (let i = 0; i < themes.length; i++) {
         const gridItem = createElement("div", ["T-EXT-theme-" + i]);
         gridItem.classList.add("T-EXT-theme-grid-input");
@@ -56,7 +89,6 @@ async function changeTheme(theme) {
     }
     const themeHSL = rgbToHsl(theme);
     originalState.elements.forEach(element => {
-        // can be removed, just make sure it doesnt affect the toolbar
         let className = String(element.className);
         if (className.startsWith("T-EXT-")) {
             return;
@@ -69,10 +101,9 @@ async function changeTheme(theme) {
             } else if (theme === '#232323') {
                 isDark = 1;
                 const originalHSL = rgbToHsl(originalColor);
-                let h = (originalHSL.h + 180) % 360;
                 let s = 0;
                 let l = 100 - originalHSL.l;
-                l = l * (100 - 13.5) / 100 + 13.5;
+                l = l * (100 - 13.5) / 100 + 20.5;
                 newColor = `hsl(0, ${s}%, ${l}%)`;
             } else if (originalColor === 'rgb(255, 255, 255)') {
                 newColor = `hsl(${themeHSL.h}, ${themeHSL.s}%, 90%)`;
@@ -82,9 +113,9 @@ async function changeTheme(theme) {
                 newColor = `hsl(${themeHSL.h}, ${themeHSL.s}%, 10%)`;
             } else {
                 const originalHSL = rgbToHsl(originalColor);
-                newColor = `hsl(${themeHSL.h}, ${originalHSL.s}%, ${originalHSL.l}%)`;
+                newColor = `hsl(${themeHSL.h}, ${originalHSL.s + 20}%, 85%)`;
             }
-            element.style.backgroundColor = newColor;
+            element.style.cssText += `background-color: ${newColor} !important;`;
         }
     });
     if (isDark == 1) {

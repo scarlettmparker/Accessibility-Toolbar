@@ -1,5 +1,3 @@
-// used to load menus on click but not again
-var menusLoaded = [0, 0, 0, 0, 0, 0, 0, 0];
 var currentMenu = -1;
 var resizeCheck = 0;
 
@@ -14,6 +12,7 @@ window.addEventListener('resize', debounce(handleResize, 75));
 window.onload = function () {
     for (let i = 0; i < menus.length; i++) {
         sessionStorage.removeItem(`menuLoaded_${i}`);
+        populateMenu(i);
     }
 }
 
@@ -65,11 +64,6 @@ async function handleResize() {
 
 async function populateMenu(index) {
     // check if the page is fully loaded
-    if (document.readyState !== 'complete') {
-        setTimeout(() => populateMenu(index), 100);
-        return;
-    }
-
     const tempMenu = chrome.runtime.getURL("toolbar/scripts/" + menus[index] + ".js");
     const contentMain = await import(tempMenu);
     contentMain.populateMenu();
@@ -159,10 +153,6 @@ async function showButtonMenu(index, resize) {
     if (index !== 8) {
         toggleMenuVisibility(tempMenu);
         if (tempMenu.style.visibility == "visible") { currentMenu = index; }
-
-        if (sessionStorage.getItem(`menuLoaded_${index}`) !== '1') {
-            populateMenu(index);
-        }
 
         if (screen.width > 505) {
             const buttonRect = button.getBoundingClientRect();

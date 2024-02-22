@@ -84,9 +84,16 @@
 	width: 40px;
 	height: 40px;
 	border: none;
+	cursor: pointer;
+}
+
+.T-EXT-text-button:hover {
+	background-color: #3377b5;
 }
 
 .T-EXT-text-dropdown {
+	padding-bottom: 0px;
+	padding-top: 0px;
 	font-family: "Inter", sans-serif;
 	font-size: 16px;
 	height: 30px;

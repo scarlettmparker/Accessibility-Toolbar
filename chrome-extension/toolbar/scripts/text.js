@@ -81,8 +81,8 @@ function storeInitialState() {
 
 function resetToInitialState() {
     elementsWithModifiedText.forEach(element => {
-        element.style.color = initialState.fontColor;
-        element.style.fontFamily = initialState.fontFamily;
+        element.style.setProperty("color", initialState.fontColor, "");
+        element.style.setProperty("fontFamily", initialState.fontFamily, "");
     });
     elementsWithModifiedText = [];
 }
@@ -94,7 +94,6 @@ export function changeText(increase, modify) {
     const elementsToUpdate = [];
 
     document.querySelectorAll('*').forEach(element => {
-        // can be removed, just make sure it doesnt affect the toolbar
         let className = String(element.className);
         if (className.startsWith("T-EXT-") || element.tagName.toLowerCase() === "body"
             || element.tagName.toLowerCase() === "head" || element.tagName.toLowerCase() === "html") {
@@ -115,7 +114,7 @@ export function changeText(increase, modify) {
                 if (increase === "Default") {
                     resetToInitialState();
                 } else {
-                    element.style[modify === "ff" ? "fontFamily" : "color"] = increase;
+                    element.style.setProperty(modify === "ff" ? "fontFamily" : "color", increase, "important");
                     elementsWithModifiedText.push(element);
                 }
                 break;
@@ -125,10 +124,10 @@ export function changeText(increase, modify) {
     elementsToUpdate.forEach(({ element, property, value }) => {
         if (modify === 'fs' || modify === 'lh') {
             const newValue = value * scaleFactor;
-            element.style[property] = newValue + 'px';
+            element.style.setProperty(property, newValue + 'px', "important");
         } else if (modify === 'cs') {
             const newValue = value + spacingFactor;
-            element.style[property] = newValue + 'px';
+            element.style.setProperty(property, newValue + 'px', "important");
         }
     });
 }
