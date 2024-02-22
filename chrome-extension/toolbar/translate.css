@@ -52,3 +52,11 @@
 	text-align: left;
 	padding-left: 10px;
 }
+
+.T-EXT-translate-selected {
+	background-color: #4E9ADF;
+}
+
+.T-EXT-translate-selected:hover {
+	background-color: #3377b5;
+}

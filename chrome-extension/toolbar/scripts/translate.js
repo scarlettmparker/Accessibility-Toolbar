@@ -1,5 +1,7 @@
 const menu = document.getElementById("T-EXT-translate-menu");
 let originalTextMap = new Map();
+let selectedLanguageCode = "none";
+
 
 async function getSupportedLanguages() {
     // get language file from chrome extension
@@ -29,36 +31,48 @@ export async function populateMenu() {
     searchBar.type = 'text';
     searchBar.placeholder = 'Search languages...';
 
-    const populateLanguageMenu = (searchValue = '') => {
-        const filteredLanguages = languages.filter(lang => lang.language.toLowerCase().includes(searchValue));
+    for (let i = 0; i < languages.length; i++) {
+        const gridItem = createElement("div", ["T-EXT-translate-" + i]);
+        gridItem.classList.add("T-EXT-translate-grid-input");
+        const currentButton = document.createElement('button');
+        currentButton.classList.add("T-EXT-translate-button");
+        currentButton.textContent = languages[i].language;
 
-        while (gridWrapper.firstChild) {
-            gridWrapper.removeChild(gridWrapper.firstChild);
+        if (languages[i].language_code === selectedLanguageCode) {
+            currentButton.classList.add('T-EXT-translate-selected');
         }
 
-        for (let i = 0; i < filteredLanguages.length; i++) {
-            const gridItem = createElement("div", ["T-EXT-translate-" + i]);
-            gridItem.classList.add("T-EXT-translate-grid-input");
-            const currentButton = document.createElement('button');
-            currentButton.classList.add("T-EXT-translate-button");
-            currentButton.textContent = filteredLanguages[i].language;
-            currentButton.addEventListener("click", function () {
-                if (filteredLanguages[i].language_code === "none") {
-                    restoreText();
-                } else {
-                    translate(filteredLanguages[i].language_code);
+        currentButton.addEventListener("click", function () {
+            if (selectedLanguageCode) {
+                const previousButton = document.querySelector('.T-EXT-translate-selected');
+                if (previousButton) {
+                    previousButton.classList.remove('T-EXT-translate-selected');
                 }
-            });
+            }
+            currentButton.classList.add('T-EXT-translate-selected');
+            selectedLanguageCode = languages[i].language_code;
+        
+            if (languages[i].language_code === "none") {
+                restoreText();
+            } else {
+                translate(languages[i].language_code);
+            }
+        });
 
-            gridItem.appendChild(currentButton);
-            gridWrapper.appendChild(gridItem);
-        }
-    };
-
-    populateLanguageMenu();
+        gridItem.appendChild(currentButton);
+        gridWrapper.appendChild(gridItem);
+    }
 
     searchBar.addEventListener('input', function() {
-        populateLanguageMenu(this.value.toLowerCase());
+        const searchValue = this.value.toLowerCase();
+        for (let i = 0; i < languages.length; i++) {
+            const button = gridWrapper.children[i].firstChild;
+            if (languages[i].language.toLowerCase().includes(searchValue)) {
+                button.style.display = '';
+            } else {
+                button.style.display = 'none';
+            }
+        }
     });
     
     menu.appendChild(searchBar);
