@@ -82,7 +82,11 @@ async function addToolbar() {
 
     // toolbar disappears on fullscreen
     document.addEventListener('fullscreenchange', () => {
-        toolbar.style.visibility = document.fullscreenElement ? "hidden" : "visible";
+        if (toolbarOpen == 1) {
+            toolbar.style.visibility = document.fullscreenElement ? "hidden" : "visible";
+        } else {
+            document.getElementById("T-EXT-reopen-button").style.visibility = document.fullscreenElement ? "hidden" : "visible";
+        }
     });
 }
 
