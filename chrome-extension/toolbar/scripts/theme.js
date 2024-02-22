@@ -12,13 +12,13 @@ function populateOriginalColorsAndElements() {
     originalState.elements.forEach(element => {
         const computedStyle = window.getComputedStyle(element);
         const backgroundColor = computedStyle.backgroundColor;
-        originalState.colors.set(element, backgroundColor); 
+        originalState.colors.set(element, backgroundColor);
     });
 }
 
 export function populateMenu() {
     const themes = [
-        { name: "Default", color: "#FFFFFF"},
+        { name: "Default", color: "#FFFFFF" },
         { name: "Black", color: "#232323" },
         { name: "Red", color: "#FF0000" },
         { name: "Green", color: "#00FF00" },

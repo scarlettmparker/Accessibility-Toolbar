@@ -58,24 +58,24 @@
 .T-EXT-button::after {
 	font-family: "Inter", sans-serif;
 	font-size: 16px;
-    content: attr(data-alt-text);
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: rgba(0, 0, 0, 0.7); 
-    color: #fff; 
-    padding: 5px 10px;
-    border-radius: 5px;
-    white-space: nowrap;
-    visibility: hidden;
-    opacity: 0;
-    transition: visibility 0s, opacity 0.3s ease;
+	content: attr(data-alt-text);
+	position: absolute;
+	bottom: 100%;
+	left: 50%;
+	transform: translateX(-50%);
+	background-color: rgba(0, 0, 0, 0.7);
+	color: #fff;
+	padding: 5px 10px;
+	border-radius: 5px;
+	white-space: nowrap;
+	visibility: hidden;
+	opacity: 0;
+	transition: visibility 0s, opacity 0.3s ease;
 }
 
 .T-EXT-button:hover::after {
-    visibility: visible;
-    opacity: 1;
+	visibility: visible;
+	opacity: 1;
 }
 
 .T-EXT-grid-item {
@@ -103,11 +103,11 @@
 		height: 60px;
 		width: 100vw;
 	}
-	
+
 	.T-EXT-button-menu {
 		margin-bottom: 60px;
 	}
-	
+
 	.T-EXT-grid-item {
 		width: 50px;
 		height: 48px;
@@ -119,24 +119,24 @@
 	.T-EXT-toolbar {
 		height: 10.5vw;
 	}
-	
+
 	.T-EXT-button-menu {
 		margin-bottom: 10.5vw;
 	}
-	
+
 	.T-EXT-grid-item {
 		margin: 0px 1px 0px 1px;
 		width: 10.5vw;
 		height: 10.5vw;
 	}
-	
+
 	.T-EXT-buttons-left,
 	.T-EXT-buttons-right {
 		margin: 0;
 	}
-	
+
 	.T-EXT-toolbar {
-		background-color: rgba(255,255,255, 0.8)
+		background-color: rgba(255, 255, 255, 0.8)
 	}
 }
 
@@ -145,6 +145,7 @@
 		visibility: hidden;
 		display: none;
 	}
+
 	.T-EXT-button-menu {
 		visibility: hidden;
 	}

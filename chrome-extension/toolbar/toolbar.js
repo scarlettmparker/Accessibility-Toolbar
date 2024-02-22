@@ -11,7 +11,7 @@ var toolbarOpen = 1;
 addToolbar();
 
 window.addEventListener('resize', debounce(handleResize, 75));
-window.onload = function() {
+window.onload = function () {
     for (let i = 0; i < menus.length; i++) {
         sessionStorage.removeItem(`menuLoaded_${i}`);
     }
@@ -33,8 +33,8 @@ async function handleResize() {
         return;
     }
     try {
-	    const tempMenu = document.getElementById(`T-EXT-${menus[currentMenu]}-menu`);
-	    const button = document.querySelectorAll(".T-EXT-button")[currentMenu];
+        const tempMenu = document.getElementById(`T-EXT-${menus[currentMenu]}-menu`);
+        const button = document.querySelectorAll(".T-EXT-button")[currentMenu];
         if (tempMenu.style.visibility == "visible" && button.offsetWidth !== 0 && button.offsetHeight !== 0) {
             const buttonRect = button.getBoundingClientRect();
             const toolbarRect = document.querySelector('.T-EXT-toolbar').getBoundingClientRect();
@@ -57,7 +57,7 @@ async function handleResize() {
                 tempMenu.style.left = "0px";
             }
         }
-		tempMenu.style.visibility = screen.width < 365 || screen.height < 420 ? "hidden" : "visible";
+        tempMenu.style.visibility = screen.width < 365 || screen.height < 420 ? "hidden" : "visible";
     } catch (e) {
         // Do nothing
     }
@@ -80,7 +80,7 @@ async function addToolbar() {
     document.body.insertBefore(toolbar, document.body.firstChild);
     generateButtonMenus();
 
-	// toolbar disappears on fullscreen
+    // toolbar disappears on fullscreen
     document.addEventListener('fullscreenchange', () => {
         toolbar.style.visibility = document.fullscreenElement ? "hidden" : "visible";
     });
@@ -94,7 +94,7 @@ function createToolbar() {
     - Add all buttons to iframe
     */
 
-	// divs for css use
+    // divs for css use
     const toolbar = createElement("div", ["T-EXT-global", "T-EXT-toolbar"], "T-EXT-toolbar");
     const buttonLWrapper = createElement("div", ["T-EXT-buttons-left-wrapper"]);
     const buttonRWrapper = createElement("div", ["T-EXT-buttons-right-wrapper"]);
@@ -106,7 +106,7 @@ function createToolbar() {
     buttonLWrapper.appendChild(buttonsLeft);
     buttonRWrapper.appendChild(buttonsRight);
 
-	// int used to separate from left to right on toolbar
+    // int used to separate from left to right on toolbar
     generateButtons(buttonsLeft, 6, 0);
     generateButtons(buttonsRight, 3, 6);
 
@@ -119,16 +119,16 @@ async function generateButtons(grid, columns, inc) {
     for (let i = inc; i < columns + inc; i++) {
         const menuName = menus[i];
         const altText = menuName.charAt(0).toUpperCase() + menuName.slice(1);
-        
+
         const buttonDiv = createElement("div", ["T-EXT-grid-item"], null, { position: "relative" });
-        const buttonItem = createElement("button", ["T-EXT-button"], null, { 
-            backgroundImage: `url(${await getButtonImage(i, filePath)})`, 
+        const buttonItem = createElement("button", ["T-EXT-button"], null, {
+            backgroundImage: `url(${await getButtonImage(i, filePath)})`,
             backgroundSize: "cover",
             backgroundColor: `#${buttonColors[i]}`,
         });
 
         buttonItem.dataset.altText = altText;
-        
+
         buttonItem.addEventListener('mouseover', () => setBackground(buttonItem, i, 0));
         buttonItem.addEventListener('mouseleave', () => setBackground(buttonItem, i, 1));
         buttonItem.addEventListener('click', () => showButtonMenu(i));
@@ -139,7 +139,7 @@ async function generateButtons(grid, columns, inc) {
 }
 
 async function getButtonImage(index, filePath) {
-	// get correct image from chrome extension
+    // get correct image from chrome extension
     return chrome.runtime.getURL(`${filePath}/${index}.png`);
 }
 
@@ -160,25 +160,25 @@ async function showButtonMenu(index, resize) {
             populateMenu(index);
         }
 
-		if (screen.width > 505) {
-			const buttonRect = button.getBoundingClientRect();
-	        const toolbarRect = document.querySelector('.T-EXT-toolbar').getBoundingClientRect();
-	
-	        let leftPosition = buttonRect.left;
-			
-	        // check if the menu is beyond the right edge of the toolbar
-	        if (leftPosition + tempMenu.offsetWidth > toolbarRect.right) {
-				leftPosition = toolbarRect.right - tempMenu.offsetWidth;
-	        }
-			
-			tempMenu.style.marginLeft = "0px";
-			tempMenu.style.marginRight = "0px";
-	        tempMenu.style.top = `${buttonRect.bottom}px`;
-	        tempMenu.style.left = `${leftPosition}px`;
-		} else {
-			tempMenu.style.marginLeft = "auto";
-			tempMenu.style.marginRight = "auto";
-		}
+        if (screen.width > 505) {
+            const buttonRect = button.getBoundingClientRect();
+            const toolbarRect = document.querySelector('.T-EXT-toolbar').getBoundingClientRect();
+
+            let leftPosition = buttonRect.left;
+
+            // check if the menu is beyond the right edge of the toolbar
+            if (leftPosition + tempMenu.offsetWidth > toolbarRect.right) {
+                leftPosition = toolbarRect.right - tempMenu.offsetWidth;
+            }
+
+            tempMenu.style.marginLeft = "0px";
+            tempMenu.style.marginRight = "0px";
+            tempMenu.style.top = `${buttonRect.bottom}px`;
+            tempMenu.style.left = `${leftPosition}px`;
+        } else {
+            tempMenu.style.marginLeft = "auto";
+            tempMenu.style.marginRight = "auto";
+        }
     } else {
         const filePath = "toolbar/assets/buttons/";
         const toolbar = document.getElementById("T-EXT-toolbar");
@@ -191,10 +191,10 @@ async function showButtonMenu(index, resize) {
             }
             toolbarOpen = 0;
             const reOpenButton = createElement("button", ["T-EXT-button", "T-EXT-reopen-button"], "T-EXT-reopen-button", {
-                backgroundImage: `url(${await getButtonImage(9, filePath)})`, 
+                backgroundImage: `url(${await getButtonImage(9, filePath)})`,
                 backgroundSize: "cover",
             });
-            reOpenButton.dataset.altText = "Reopen Toolbar";
+            reOpenButton.dataset.altText = "Show Toolbar";
             reOpenButton.addEventListener('click', () => showButtonMenu(8));
             document.body.insertBefore(reOpenButton, document.body.firstChild);
         } else {
@@ -209,7 +209,7 @@ function toggleMenuVisibility(menu) {
     allMenus.forEach(m => {
         m.style.visibility = m === menu ? toggleVisibility(m.style.visibility) : "hidden";
     });
-	currentMenu = -1
+    currentMenu = -1
 }
 
 function generateButtonMenus() {
@@ -237,12 +237,12 @@ let currentElementID;
 
 document.addEventListener('mousemove', (e) => {
     let element = document.elementFromPoint(e.pageX - window.pageXOffset, e.pageY - window.pageYOffset);
-	try {
-		if (element.nodeName == "IMG" & element != currentElement ) {
-			currentElement = element;
-			console.log(currentElement.src);
-		}
-	}catch(e) {
-		currentElement = null;
-	}
+    try {
+        if (element.nodeName == "IMG" & element != currentElement ) {
+            currentElement = element;
+            console.log(currentElement.src);
+        }
+    }catch(e) {
+        currentElement = null;
+    }
 });*/

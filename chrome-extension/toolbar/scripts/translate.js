@@ -3,7 +3,7 @@ let originalTextMap = new Map();
 
 export function populateMenu() {
     const languages = [
-        { language: "Default Language", language_code: "none"},
+        { language: "Default Language", language_code: "none" },
         { language: "Afrikaans", language_code: "af" },
         { language: "Albanian", language_code: "sq" },
         { language: "Amharic", language_code: "am" },
@@ -141,7 +141,7 @@ export function populateMenu() {
     ];
 
     storeOriginalText();
-    
+
     const gridWrapper = createElement("div", ["T-EXT-translate-menu-wrapper"]);
     menu.appendChild(gridWrapper);
     for (let i = 0; i < languages.length; i++) {
