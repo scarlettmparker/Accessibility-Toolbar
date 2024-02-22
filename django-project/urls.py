@@ -35,7 +35,7 @@ class TranslationView(views.APIView):
             target_language = serializer.validated_data['target_language']
 
             with ThreadPoolExecutor() as executor:
-                translated_texts = list(executor.map(lambda text: GoogleTranslator(source='auto', target=target_language).translate(text), original_texts))
+                translated_texts = list(executor.map(lambda text: GoogleTranslator(source='auto', target=target_language, verify='false').translate(text), original_texts))
 
             return Response({'translated_text': translated_texts})
         else:
