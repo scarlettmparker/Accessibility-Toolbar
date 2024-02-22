@@ -14,6 +14,7 @@ This project demonstrates a minimally functional (few features) prototype for an
 Currently, there's no set installation to easily add this to Chrome as the extension is unpackaged and the back-end must be run manually, but some steps are provided below.
 
 • By navigating to chrome://extensions on your browser and clicking "Load unpacked" at the top left corner of the screen, you can load the extension into Chrome by selecting the "/chrome-extension" directory and clicking select folder. This should add the extension "Accessibility Toolbar 1.0" to your browser.<br>
+
 • To enable to back-end for translation use, you must first install the requirements through requirements.txt using Python with the command "pip install -r requirements.txt" in your terminal. From there, you can simply run the command "python manage.py runserver" and page translation shall become functional. It should be noted that the Google Translate API has a daily limit of 250,000 characters.
 
 # Usage
@@ -21,11 +22,12 @@ The toolbar will display at the bottom of every web page in a fixed position, al
 
 ## Text Modification
 The blue button with the alt-text "Text" can be pressed to enable text modification across the webpage. This feature modifies Font Face, Font Colour (both of which can be reset), Font Size, Line Height and Character Spacing.<br>
+
 Font Size and Line Height are scaled by a factor of 10% in either direction, whereas Character Spacing is modified by 0.2px in either direction.
 
 ## Theme Modification
-The green button with the alt-text "Theme" can be pressed to enable theme modification across the webpage. This feature modifies the overall theme (colour) of a webpage by applying a colour filter based on HSL levels.<br>
-"Theme Default" will reset the page its default colours, whereas all other buttons will change the look of the page. Theme Black will also change the font colour of the page to white to accommodate the new background.<br>
+The green button with the alt-text "Theme" can be pressed to enable theme modification across the webpage. This feature modifies the overall theme (colour) of a webpage by applying a colour filter based on HSL levels.<br><br>
+"Theme Default" will reset the page its default colours, whereas all other buttons will change the look of the page. Theme Black will also change the font colour of the page to white to accommodate the new background.<br><br>
 This feature will be expanded to further themes in the future. The "Custom Colour" button currently is non functional.
 
 ## Translate
