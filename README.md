@@ -1,5 +1,5 @@
-# Project Name
-> Accessibility Toolbar Prototype.
+# Accessibility Toolbar Prototype.
+A simple prototype for an accessibility toolbar.
 
 # Table of contents
 • Introduction
