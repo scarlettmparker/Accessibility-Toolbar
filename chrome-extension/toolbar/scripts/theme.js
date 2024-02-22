@@ -7,17 +7,21 @@ let originalState = {
 var isDark = 0;
 
 if (document.readyState === "loading") {
-    window.addEventListener("load", populateOriginalColorsAndElements);
+    window.addEventListener("load", () => document.querySelectorAll('*').forEach(processElement));
 } else {
-    populateOriginalColorsAndElements();
+    document.querySelectorAll('*').forEach(processElement);
 }
 
 function observeDOMChanges() {
-    // Create a new observer
     const observer = new MutationObserver((mutationsList, observer) => {
-        for(let mutation of mutationsList) {
+        for (let mutation of mutationsList) {
             if (mutation.type === 'childList') {
-                populateOriginalColorsAndElements();
+                mutation.addedNodes.forEach(node => {
+                    if (node.nodeType === Node.ELEMENT_NODE) {
+                        processElement(node);
+                        node.querySelectorAll('*').forEach(processElement);
+                    }
+                });
             }
         }
     });
@@ -25,28 +29,18 @@ function observeDOMChanges() {
     observer.observe(document.body, { childList: true, subtree: true });
 }
 
-async function populateOriginalColorsAndElements() {
-    const allElements = document.querySelectorAll('*');
+function processElement(element) {
+    if (element === document.body || originalState.elements.includes(element)) {
+        return;
+    }
 
-    allElements.forEach(element => {
-        // if the current element is the body tag, skip it
-        if (element === document.body) {
-            return;
-        }
+    const computedStyle = getComputedStyle(element);
+    const backgroundColor = computedStyle.backgroundColor;
 
-        // if the element is already in originalState, skip it
-        if (originalState.elements.includes(element)) {
-            return;
-        }
-
-        const computedStyle = getComputedStyle(element);
-        const backgroundColor = computedStyle.backgroundColor;
-
-        if (backgroundColor !== 'transparent' && !backgroundColor.startsWith('rgba(0, 0, 0, 0)')) {
-            originalState.elements.push(element);
-            originalState.colors.set(element, backgroundColor);
-        }
-    });
+    if (backgroundColor !== 'transparent' && !backgroundColor.startsWith('rgba(0, 0, 0, 0)')) {
+        originalState.elements.push(element);
+        originalState.colors.set(element, backgroundColor);
+    }
 }
 
 export function populateMenu() {
@@ -99,18 +93,26 @@ async function changeTheme(theme) {
             if (theme === '#FFFFFF') {
                 newColor = originalColor;
             } else if (theme === '#232323') {
-                isDark = 1;
-                const originalHSL = rgbToHsl(originalColor);
-                let s = 0;
-                let l = 100 - originalHSL.l;
-                l = l * (100 - 13.5) / 100 + 20.5;
-                newColor = `hsl(0, ${s}%, ${l}%)`;
+                if (originalColor.startsWith('rgba(0, 0, 0, 0')) {
+                    const originalHSL = rgbToHsl(originalColor);
+                    newColor = `hsl(${themeHSL.h}, ${originalHSL.s}%, 35%)`;
+                } else {
+                    isDark = 1;
+                    const originalHSL = rgbToHsl(originalColor);
+                    let s = 0;
+                    let l = 100 - originalHSL.l;
+                    l = l * (100 - 13.5) / 100 + 20.5;
+                    newColor = `hsl(0, ${s}%, ${l}%)`;
+                }
             } else if (originalColor === 'rgb(255, 255, 255)') {
                 newColor = `hsl(${themeHSL.h}, ${themeHSL.s}%, 90%)`;
             } else if (originalColor === 'rgb(0, 0, 0)') {
                 const originalHSL = rgbToHsl(originalColor);
                 newColor = `hsl(${themeHSL.h}, ${originalHSL.s}%, ${originalHSL.l}%)`;
                 newColor = `hsl(${themeHSL.h}, ${themeHSL.s}%, 10%)`;
+            } else if (originalColor.startsWith('rgba(0, 0, 0, 0')) {
+                const originalHSL = rgbToHsl(originalColor);
+                newColor = `hsl(${themeHSL.h}, ${originalHSL.s + 20}%, 75%)`;
             } else {
                 const originalHSL = rgbToHsl(originalColor);
                 newColor = `hsl(${themeHSL.h}, ${originalHSL.s + 20}%, 85%)`;
@@ -118,6 +120,7 @@ async function changeTheme(theme) {
             element.style.cssText += `background-color: ${newColor} !important;`;
         }
     });
+
     if (isDark == 1) {
         textModify.changeText("White", "fc");
     } else {

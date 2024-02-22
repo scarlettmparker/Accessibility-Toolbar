@@ -6,17 +6,15 @@ let selectedLanguageCode = "none";
 async function getSupportedLanguages() {
     // get language file from chrome extension
     const url = chrome.runtime.getURL(`toolbar/assets/languages/supported_languages.json`);
-    
+
     // fetch the file and parse it as JSON
     const response = await fetch(url);
     let data = await response.json();
 
-    console.log(data);
-
     if (typeof data === 'object' && !Array.isArray(data)) {
-        data = Object.entries(data).map(([language, language_code]) => ({language, language_code}));
+        data = Object.entries(data).map(([language, language_code]) => ({ language, language_code }));
     }
-    
+
     return data;
 }
 
@@ -51,7 +49,7 @@ export async function populateMenu() {
             }
             currentButton.classList.add('T-EXT-translate-selected');
             selectedLanguageCode = languages[i].language_code;
-        
+
             if (languages[i].language_code === "none") {
                 restoreText();
             } else {
@@ -63,7 +61,7 @@ export async function populateMenu() {
         gridWrapper.appendChild(gridItem);
     }
 
-    searchBar.addEventListener('input', function() {
+    searchBar.addEventListener('input', function () {
         const searchValue = this.value.toLowerCase();
         for (let i = 0; i < languages.length; i++) {
             const button = gridWrapper.children[i].firstChild;
@@ -74,7 +72,7 @@ export async function populateMenu() {
             }
         }
     });
-    
+
     menu.appendChild(searchBar);
     menu.appendChild(gridWrapper);
 }
