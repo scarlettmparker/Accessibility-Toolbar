@@ -30,17 +30,14 @@ function observeDOMChanges() {
 }
 
 function processElement(element) {
-    if (element === document.body || originalState.elements.includes(element)) {
+    if (originalState.elements.includes(element)) {
         return;
     }
 
+    originalState.elements.push(element);
     const computedStyle = getComputedStyle(element);
     const backgroundColor = computedStyle.backgroundColor;
-
-    if (backgroundColor !== 'transparent' && !backgroundColor.startsWith('rgba(0, 0, 0, 0)')) {
-        originalState.elements.push(element);
-        originalState.colors.set(element, backgroundColor);
-    }
+    originalState.colors.set(element, backgroundColor);
 }
 
 export function populateMenu() {
