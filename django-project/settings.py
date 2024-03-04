@@ -26,9 +26,7 @@ SECRET_KEY = 'django-insecure-z1s@-h3@e9yy+@=jv^n+!1#__&k!!ouu1cjq20b_o95%5y&_)t
 DEBUG = True
 CORS_ORIGIN_ALLOW_ALL = True
 
-ALLOWED_HOSTS = [
-    'dissertation-extension.on.dockerize.io'
-]
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -36,8 +34,8 @@ ALLOWED_HOSTS = [
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
-    'django.contrib.contenttypes',
     'django.contrib.sessions',
+    'django.contrib.contenttypes',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_rename_app',
