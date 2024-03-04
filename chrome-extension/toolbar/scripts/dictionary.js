@@ -29,7 +29,7 @@ async function searchWord(word) {
 
 async function fetchDefinition(word) {
 	const url = 'http://127.0.0.1:8000/definition/';
-	const data = { word: word };
+	const data = { word: word.toLowerCase() };
 
 	const response = await fetch(url, {
 		method: 'POST',
