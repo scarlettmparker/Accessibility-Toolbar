@@ -26,7 +26,9 @@ SECRET_KEY = 'django-insecure-z1s@-h3@e9yy+@=jv^n+!1#__&k!!ouu1cjq20b_o95%5y&_)t
 DEBUG = True
 CORS_ORIGIN_ALLOW_ALL = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'dissertation-extension.on.dockerize.io'
+]
 
 
 # Application definition
