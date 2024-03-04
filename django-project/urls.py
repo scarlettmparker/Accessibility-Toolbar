@@ -59,8 +59,7 @@ class DefinitionView(views.APIView):
         if serializer.is_valid():
             word = request.data.get('word')
             language_code = detector.detect_language_of(word)
-            print(language_code)
-            parser.set_default_language(str(language_code).split('.')[1])
+            # parser.set_default_language(str(language_code).split('.')[1])
             definitions = parser.fetch(word)
             return Response(definitions)
         else:
