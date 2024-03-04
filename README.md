@@ -40,6 +40,9 @@ This feature will be expanded to further themes in the future. The `Custom Colou
 ## Translate
 The red button with the alt-text `Translate` can be pressed to translate an entire webpage. This feature gathers all text nodes on the page and sends them to the back-end in order to translate the text and is then returned to the front-end. The `Default Language` button can be pressed to reset the page language.<br>
 
+## Dictionary Feature
+The pink button with the alt-text `Dictionary` can be pressed to look up a word and its definition, pronunciation, synonyms, antonyms and examples from its wiktionary entry. This can be done either with the search bar or through the current selected word with the `Search Word` and `Search Selected` buttons. Due to how the scraping of the wiktionary pages work, the language of the word must be estimated so results may not be 100% accurate.
+
 ## Hide Toolbar
 The grey button with the alt-text `Hide` can be pressed to hide the toolbar. This will collapse the overall toolbar, closing all open menus and replacig the toolbar with a button in the middle of the page with the alt-text `Show Toolbar`, used to re-open the toolbar.
 
