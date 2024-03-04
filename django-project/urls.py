@@ -8,7 +8,14 @@ from rest_framework.response import Response
 from deep_translator import GoogleTranslator
 from rest_framework.permissions import AllowAny
 from concurrent.futures import ThreadPoolExecutor
+from wiktionaryparser import WiktionaryParser
+from lingua import Language, LanguageDetectorBuilder, IsoCode639_1
 import unicodedata
+import os
+import json
+
+parser = WiktionaryParser()
+detector = LanguageDetectorBuilder.from_all_languages().build()
 
 # Serializers define the API representation.
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -41,6 +48,25 @@ class TranslationView(views.APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class DefinitionSerializer(serializers.Serializer):
+    word = serializers.CharField(max_length=100)
+
+class DefinitionView(views.APIView):
+    permission_classes = [AllowAny]
+    
+    def post(self, request):
+        serializer = DefinitionSerializer(data=request.data)
+        if serializer.is_valid():
+            word = request.data.get('word')
+            language_code = detector.detect_language_of(word)
+            print(language_code)
+            parser.set_default_language(str(language_code).split('.')[1])
+            definitions = parser.fetch(word)
+            return Response(definitions)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
 router.register(r'users', UserViewSet)
@@ -50,4 +76,5 @@ urlpatterns = [
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls')),
     path('translate/', TranslationView.as_view(), name='translate'),
+    path('definition/', DefinitionView.as_view(), name='definition'),
 ]

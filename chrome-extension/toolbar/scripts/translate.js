@@ -110,7 +110,8 @@ async function translate(language) {
             node.textContent.trim() !== '' &&
             node.parentNode.nodeName !== 'SCRIPT' &&
             node.parentNode.nodeName !== 'STYLE' &&
-            !String(node.parentNode.className).startsWith("T-EXT-")) {
+            !String(node.parentNode.className).startsWith("T-EXT-") &&
+            !String(node.parentNode.id).startsWith("T-EXT-")) {
             textNodes.push(node);
         } else {
             for (let i = 0; i < node.childNodes.length; i++) {

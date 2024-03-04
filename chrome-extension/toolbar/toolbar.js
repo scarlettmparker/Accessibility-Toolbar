@@ -10,7 +10,8 @@ addToolbar();
 
 window.addEventListener('resize', debounce(handleResize, 75));
 window.onload = function () {
-    for (let i = 0; i < menus.length; i++) {
+    // - 1 because the hide button has no menu 
+    for (let i = 0; i < menus.length - 1; i++) {
         sessionStorage.removeItem(`menuLoaded_${i}`);
         populateMenu(i);
     }
@@ -69,6 +70,7 @@ async function populateMenu(index) {
     contentMain.populateMenu();
     sessionStorage.setItem(`menuLoaded_${index}`, '1');
 }
+
 async function addToolbar() {
     const toolbar = createToolbar();
     document.body.insertBefore(toolbar, document.body.firstChild);
@@ -146,7 +148,7 @@ function setBackground(button, index, type) {
     button.style.backgroundColor = `#${color}`;
 }
 
-async function showButtonMenu(index, resize) {
+async function showButtonMenu(index) {
     const tempMenu = document.getElementById(`T-EXT-${menus[index]}-menu`);
     const button = document.querySelectorAll(".T-EXT-button")[index];
 

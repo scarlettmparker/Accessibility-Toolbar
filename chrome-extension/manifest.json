@@ -8,7 +8,7 @@
       "matches": [
         "<all_urls>"
       ],
-      "css": ["toolbar/toolbar.css", "toolbar/text.css", "toolbar/theme.css", "toolbar/translate.css"],
+      "css": ["toolbar/toolbar.css", "toolbar/text.css", "toolbar/theme.css", "toolbar/translate.css", "toolbar/dictionary.css"],
       "js": ["toolbar/toolbar.js"]
     }
   ],
