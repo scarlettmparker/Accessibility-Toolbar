@@ -3,15 +3,85 @@ let initialState = {
     fontFamily: ""
 };
 
-let elementsWithModifiedText = [];
+let elementsWithModifiedText = [[], []];
+let relativeTextSizes = [1, 1, 0]
+let currentFontFace = null;
+let currentFontColor = null;
 
 if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", storeInitialState);
+    document.addEventListener("DOMContentLoaded", function() {
+        storeInitialState();
+        setupObserver();
+    });
 } else {
     storeInitialState();
+    setupObserver();
 }
 
 const menu = document.getElementById("T-EXT-text-menu");
+
+function setupObserver() {
+    const observer = new MutationObserver((mutationsList, observer) => {
+        const elementsToUpdate = [];
+        for (let mutation of mutationsList) {
+            if (mutation.type === 'childList') {
+                mutation.addedNodes.forEach(node => {
+                    collectElementsToUpdate(node, elementsToUpdate);
+                });
+            }
+        }
+        applyChangesToElements(elementsToUpdate);
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+}
+
+function collectElementsToUpdate(node, elementsToUpdate) {
+    if (node.nodeType === Node.ELEMENT_NODE) {
+        let className = String(node.className);
+        if (className.startsWith("T-EXT-") || node.tagName.toLowerCase() === "body"
+            || node.tagName.toLowerCase() === "head" || node.tagName.toLowerCase() === "html") {
+            return;
+        }
+        if (!['SCRIPT', 'STYLE', 'META', 'TITLE', 'LINK', 'BR', 'HR', 'IMG', 'INPUT', 'TEXTAREA', 'SELECT', 'OPTION', 'AREA', 'MAP', 'CANVAS', 'SVG', 'IFRAME', 'OBJECT', 'EMBED', 'AUDIO', 'VIDEO'].includes(node.nodeName.toUpperCase())) {
+            if (relativeTextSizes[0] !== 1) {
+                elementsToUpdate.push({ element: node, property: 'fontSize', value: parseFloat(window.getComputedStyle(node).fontSize) });
+            }
+            if (relativeTextSizes[1] !== 1) {
+                elementsToUpdate.push({ element: node, property: 'lineHeight', value: parseFloat(window.getComputedStyle(node).lineHeight) });
+            }
+            if (relativeTextSizes[2] !== 0) {
+                elementsToUpdate.push({ element: node, property: 'letterSpacing', value: (parseFloat(window.getComputedStyle(node).letterSpacing) || 0) });
+            }
+            if (currentFontFace !== null) {
+                node.style.setProperty("font-family", currentFontFace, "important");
+                elementsWithModifiedText[0].push(node);
+            }
+            if (currentFontColor !== null) {
+                node.style.setProperty("color", currentFontColor, "important");
+                elementsWithModifiedText[1].push(node);
+            }
+        }
+        node.childNodes.forEach((childNode) => collectElementsToUpdate(childNode, elementsToUpdate));
+    }
+}
+
+function applyChangesToElements(elementsToUpdate) {
+    elementsToUpdate.forEach(({ element, property, value }) => {
+        if (property === 'fontSize' || property === 'lineHeight') {
+            let newValue = 0;
+            if (property === 'fontSize') {
+                newValue = value * relativeTextSizes[0];
+            } else {
+                newValue = value * relativeTextSizes[1];
+            }
+            element.style[property] = newValue + 'px';
+        } else if (property === 'letterSpacing') {
+            let newValue = value + relativeTextSizes[2];
+            element.style[property] = newValue + 'px';
+        }
+    });
+}
 
 export function populateMenu() {
     const gridKey = ["Font Face:", "dd-ff", "Font Colour:", "dd-fc", "Font Size:", "b-m-fs",
@@ -79,12 +149,19 @@ function storeInitialState() {
     });
 }
 
-function resetToInitialState() {
-    elementsWithModifiedText.forEach(element => {
-        element.style.setProperty("color", initialState.fontColor, "");
-        element.style.fontFamily = initialState.fontFamily;
-    });
-    elementsWithModifiedText = [];
+function resetToInitialState(property) {
+    if (property === "fontFamily") {
+        elementsWithModifiedText[0].forEach(element => {
+            element.style.fontFamily = initialState.fontFamily;
+            elementsWithModifiedText[0] = [];
+        });
+    }
+    if (property === "color") {
+        elementsWithModifiedText[1].forEach(element => {
+            element.style.setProperty("color", initialState.fontColor, "");
+            elementsWithModifiedText[1] = [];
+        });
+    }
 }
 
 export function changeText(increase, modify) {
@@ -111,30 +188,47 @@ export function changeText(increase, modify) {
                 break;
             case "ff":
                 if (increase === "Default") {
-                    resetToInitialState();
+                    resetToInitialState("fontFamily");
+                    currentFontFace = null;
                 } else {
+                    currentFontFace = increase;
                     element.style.fontFamily = increase;
-                    elementsWithModifiedText.push(element);
+                    elementsWithModifiedText[0].push(element);
                 }
                 break;
             case "fc":
                 if (increase === "Default") {
-                    resetToInitialState();
+                    resetToInitialState("color");
+                    currentFontColor = null;
                 } else {
+                    currentFontColor = increase;
                     element.style.setProperty("color", increase, "important");
-                    elementsWithModifiedText.push(element);
+                    elementsWithModifiedText[1].push(element);
                 }
                 break;
         }
     });
 
+    let passOne = [0, 0, 0];
     elementsToUpdate.forEach(({ element, property, value }) => {
         if (modify === 'fs' || modify === 'lh') {
             const newValue = value * scaleFactor;
             element.style[property] = newValue + 'px';
+            if (modify === 'fs' & passOne[0] == 0) {
+                passOne[0] = 1;
+                relativeTextSizes[0] *= scaleFactor;
+            } else if (modify === 'lh' & passOne[1] == 0){
+                passOne[1] = 1;
+                relativeTextSizes[1] *= scaleFactor;
+            }
         } else if (modify === 'cs') {
             const newValue = value + spacingFactor;
             element.style[property] = newValue + 'px';
+            if (passOne[2] == 0) {
+                passOne[2] = 1;
+                relativeTextSizes[2] += spacingFactor;
+            }
         }
     });
+    passOne = [0, 0, 0];
 }

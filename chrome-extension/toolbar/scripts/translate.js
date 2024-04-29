@@ -1,7 +1,7 @@
+export let selectedLanguageCode = "none";
+
 const menu = document.getElementById("T-EXT-translate-menu");
 let originalTextMap = new Map();
-let selectedLanguageCode = "none";
-
 
 async function getSupportedLanguages() {
     // get language file from chrome extension
@@ -80,9 +80,7 @@ export async function populateMenu() {
 function storeOriginalText() {
     function collectTextNodes(node) {
         if (node.nodeType === Node.TEXT_NODE &&
-            node.textContent.trim() !== '' &&
-            node.parentNode.nodeName !== 'SCRIPT' &&
-            node.parentNode.nodeName !== 'STYLE') {
+            node.textContent.trim() !== '') {
             originalTextMap.set(node, node.textContent);
         } else {
             for (let i = 0; i < node.childNodes.length; i++) {
@@ -101,18 +99,19 @@ async function translate(language) {
     controller = new AbortController();
 
     const url = 'http://127.0.0.1:8000/translate/';
-    const BATCH_SIZE = 25;
+    const BATCH_SIZE = 5;
     const RETRY_LIMIT = 2;
     const textNodes = [];
 
     function collectTextNodes(node) {
         if (node.nodeType === Node.TEXT_NODE &&
             node.textContent.trim() !== '' &&
-            node.parentNode.nodeName !== 'SCRIPT' &&
-            node.parentNode.nodeName !== 'STYLE' &&
             !String(node.parentNode.className).startsWith("T-EXT-") &&
             !String(node.parentNode.id).startsWith("T-EXT-")) {
             textNodes.push(node);
+            if (!originalTextMap.has(node)) {
+                originalTextMap.set(node, node.textContent);
+            }
         } else {
             for (let i = 0; i < node.childNodes.length; i++) {
                 collectTextNodes(node.childNodes[i]);

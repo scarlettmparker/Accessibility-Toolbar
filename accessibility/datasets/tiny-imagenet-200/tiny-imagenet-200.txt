@@ -1,0 +1,6 @@
+Datasets are not included in these files to save storage
+tiny-imagenet-200 can be found at: http://cs231n.stanford.edu/tiny-imagenet-200.zip or by running the wget command:
+
+wget http://cs231n.stanford.edu/tiny-imagenet-200.zip
+
+You will have to extract the dataset into this folder after downloading.

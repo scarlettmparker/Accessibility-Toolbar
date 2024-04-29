@@ -1,0 +1,68 @@
+#T-EXT-magnify-menu {
+	box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+	border: 0.1rem solid rgba(216, 216, 216, 1);
+	height: 250px;
+}
+
+.T-EXT-magnify-menu-wrapper {
+	position: relative;
+	height: auto;
+	max-height: 86%;
+	display: grid;
+	grid-template-columns: 1fr;
+	grid-column-gap: 0px;
+	grid-row-gap: 0px;
+	align-items: center;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+}
+
+.T-EXT-magnify-grid-1 {
+	margin-top: 10px;
+	margin-left: 15px;
+	grid-area: 1 / 1 / 2 / 2;
+}
+.T-EXT-magnify-grid-2 {
+	margin-top: 10px;
+	margin-left: 5px;
+	justify-items: center;
+	grid-area: 1 / 2 / 2 / 3;
+}
+.T-EXT-magnify-grid-3 {
+	text-align: center;
+	font-family: "Inter", sans-serif;
+	font-size: 18px;
+}
+.T-EXT-magnify-grid-4 {
+	text-align: center;
+}
+.T-EXT-magnify-grid-5 {
+	text-align: center;
+	font-family: "Inter", sans-serif;
+	font-size: 18px;
+}
+.T-EXT-magnify-grid-6 {
+	text-align: center;
+}
+
+.T-EXT-magnify-show-button {
+	margin-top: 7px;
+	margin-bottom: 7px;
+	font-family: "Inter", sans-serif;
+	font-size: 18px;
+	color: white;
+	background-color: #4E4E4E;
+	width: 145px;
+	height: 46px;
+	box-sizing: border-box;
+	border: none;
+	text-align: center;
+	cursor: pointer;
+}
+
+.T-EXT-magnify-show-button:hover {
+	background-color: #232323;
+}

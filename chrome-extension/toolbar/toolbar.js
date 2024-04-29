@@ -1,13 +1,15 @@
 var currentMenu = -1;
 var resizeCheck = 0;
 
+// menus and their colours
 const menus = ["play", "text", "theme", "dictionary", "translate", "magnify", "info", "settings", "hide"];
-const buttonColors = ["4b2699", "4079ad", "2ea32c", "b82a7f", "b62a3a", "16959d", "707070", "707070", "ffffff"];
-const hoverColors = ["411d81", "265793", "1a8719", "a1175e", "9e1722", "0c767f", "4e4e4e", "4e4e4e", "f1f1f1"];
+const buttonColors = ["411d81", "265793", "1a8719", "a1175e", "9e1722", "0c767f", "4e4e4e", "4e4e4e", "ffffff"];
+const hoverColors = ["37186e", "20497a", "156914", "a1175e", "781146", "0a5a61", "404040", "404040", "f1f1f1"];
 
 var toolbarOpen = 1;
 addToolbar();
 
+// debounce on window resize prevents resizing issues
 window.addEventListener('resize', debounce(handleResize, 75));
 window.onload = function () {
     // - 1 because the hide button has no menu 
@@ -17,6 +19,24 @@ window.onload = function () {
     }
 }
 
+document.addEventListener('keydown', async (event) => {
+    // used to quit out of the magnify feature
+    if (event.key == 'Escape') {
+        try {
+            const magnifyFile = chrome.runtime.getURL("toolbar/scripts/magnify.js");
+            const magnify = await import(magnifyFile);
+            if (magnify.magnifyingGlass) {
+                magnify.hideMagnify();
+            } else {
+                toggleMenuVisibility(currentMenu);
+            }
+        } catch (e) {
+            console.log("Error with magnify.js. Ignore this error if you are not using the magnify feature.");
+        }
+    }
+});
+
+// limit the rate at which a function can be called
 function debounce(func, delay) {
     let timerId;
     return function (...args) {
@@ -87,13 +107,6 @@ async function addToolbar() {
 }
 
 function createToolbar() {
-    //const toolbar = createElement("div", ["T-EXT-global", "T-EXT-toolbar"], "T-EXT-toolbar");
-    /*
-    TODO:
-    - Change toolbar to iframe
-    - Add all buttons to iframe
-    */
-
     // divs for css use
     const toolbar = createElement("div", ["T-EXT-global", "T-EXT-toolbar"], "T-EXT-toolbar");
     const buttonLWrapper = createElement("div", ["T-EXT-buttons-left-wrapper"]);
@@ -228,17 +241,54 @@ function toggleVisibility(visibility) {
     return visibility === "visible" ? "hidden" : "visible";
 }
 
-/*let currentElement;
+let currentElement;
 let currentElementID;
+let button = document.createElement('button');
+button.innerText = 'Generate alt text';
+button.style.position = 'absolute';
+button.style.display = 'none';
+document.body.appendChild(button);
 
 document.addEventListener('mousemove', (e) => {
     let element = document.elementFromPoint(e.pageX - window.pageXOffset, e.pageY - window.pageYOffset);
     try {
         if (element.nodeName == "IMG" & element != currentElement ) {
             currentElement = element;
-            console.log(currentElement.src);
+            let rect = currentElement.getBoundingClientRect();
+            button.style.left = `${rect.left}px`;
+            button.style.top = `${rect.bottom}px`;
+            button.style.display = 'block';
         }
-    }catch(e) {
+    } catch(e) {
         currentElement = null;
+        button.style.display = 'none';
     }
-});*/
+});
+
+button.addEventListener('click', async () => {
+    if (currentElement) {
+        const url = 'http://127.0.0.1:8000/classify/';
+        const data = {
+            image: currentElement.src
+        };
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const jsonResponse = await response.json();
+            
+        } catch (error) {
+            console.log('Error:', error);
+        }
+    }
+});

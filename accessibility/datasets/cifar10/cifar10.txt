@@ -1,0 +1,5 @@
+Datasets are not included in these files to save storage
+CIFAR10 can be found at: https://huggingface.co/datasets/cifar10 or cloned with git:
+
+- git lfs install
+- git clone https://huggingface.co/datasets/cifar10

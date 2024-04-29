@@ -20,7 +20,7 @@ The extension can be loaded into Chrome through the packed extension or unpacked
 • By navigating to `chrome://extensions` on your browser and enabling `Developer mode` (top right), you can click on `Load unpacked` at the top left corner of the screen, you can load the extension into Chrome by selecting the `/chrome-extension` directory and clicking select folder. This should add the extension `Accessibility Toolbar 1.0` to your browser.<br>
 
 ## Back-end set-up
-• To enable the back-end for translation/dictionary use, you must first install the necessary packages through the `/requirements.txt` file using Python with the command `pip install -r requirements.txt` in your terminal. From there, you can simply run the command `python manage.py runserver` and the page translation/dictionary features shall become functional. This can also be done through `#setup.bat` for first time use, and the server may be run with `#run.bat` from then on.
+• To enable the back-end for translation/dictionary use, you must first install the necessary packages through the `/requirements.txt` file using Python with the command `pip install -r requirements.txt` in your terminal. From there, you can simply run the command `python manage.py runserver` and the page translation/dictionary features shall become functional. This can also be done through `#setup.bat` for first time use, and the server may be run with `#run.bat` from then on. If you are a Linux user you MUST run `sudo apt-get update && apt-get install ffmpeg libsm6 libxext6 -y` for all the required packages to work.
 
 # Usage
 The toolbar will display at the bottom of every web page in a fixed position, all current functionality is listed below.

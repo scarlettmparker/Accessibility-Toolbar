@@ -1,4 +1,5 @@
 const menu = document.getElementById("T-EXT-dictionary-menu");
+let languageCode = "none";
 
 export function populateMenu() {
 	const gridWrapper = createElement("div", ["T-EXT-dictionary-menu-wrapper"]);
@@ -24,12 +25,21 @@ async function searchWord(word) {
 	const displayResponse = document.getElementById("T-EXT-dictionary-grid-3");
 	displayResponse.innerHTML = '';
 	const entries = Object.values(responseJSON);
-	entries.forEach(entry => createEntryElements(entry, displayResponse));
+	if (entries[0].definitions.length === 0) {
+		createAndAppendElement('h3', 'Word not found', displayResponse, 'notFoundTitle');
+	} else {
+		entries.forEach(entry => createEntryElements(entry, displayResponse, word));
+	}
 }
 
 async function fetchDefinition(word) {
+	const translationFile = chrome.runtime.getURL("toolbar/scripts/translate.js");
+    languageCode = await import(translationFile).then(module => module.selectedLanguageCode);
 	const url = 'http://127.0.0.1:8000/definition/';
-	const data = { word: word.toLowerCase() };
+	const data = {
+		word: word.toLowerCase(),
+		language: languageCode
+	};
 
 	const response = await fetch(url, {
 		method: 'POST',
@@ -40,18 +50,47 @@ async function fetchDefinition(word) {
 	return await response.json();
 }
 
-function createEntryElements(entry, parent) {
+function createEntryElements(entry, parent, word) {
+	console.log(entry.pronunciations);
     if (entry.pronunciations && entry.pronunciations.text) {
         createAndAppendElement('h3', 'Pronunciations', parent, 'pronunciationTitle');
-        createAndAppendElement('p', entry.pronunciations.text, parent, 'pronunciation');
+		if (Array.isArray(entry.pronunciations.text)) {
+			entry.pronunciations.text.forEach((text, index) => {
+				let element = document.createElement('p');
+				if (text.includes('IPA')) {
+					let clickableText = document.createElement('a');
+					clickableText.textContent = text;
+					clickableText.style.color = '#4E9ADF';
+					clickableText.style.cursor = 'pointer';
+					clickableText.onmouseover = function() { this.style.color = '#FF0000'; };
+					clickableText.onmouseout = function() { this.style.color = '#4E9ADF'; };
+					clickableText.onclick = function() {
+						const synth = window.speechSynthesis;
+						const utterThis = new SpeechSynthesisUtterance(word);
+						if (languageCode != "none") {
+							utterThis.lang = languageCode;
+						}
+						synth.speak(utterThis);
+					};
+					element.appendChild(clickableText);
+				} else {
+					element.textContent = text;
+				}
+				parent.appendChild(element);
+			});
+		} else {
+			let element = document.createElement('p');
+			element.textContent = entry.pronunciations.text;
+			parent.appendChild(element);
+		}
     }
 
-    if (entry.definitions) {
+	if (entry.definitions) {
         entry.definitions.forEach(definition => {
             if (definition.text) {
-                createDefinitionElements(definition, parent);
+	            createDefinitionElements(definition, parent);
             }
-        });
+	    });
     }
 }
 

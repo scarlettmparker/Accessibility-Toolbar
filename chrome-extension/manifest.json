@@ -8,8 +8,8 @@
       "matches": [
         "<all_urls>"
       ],
-      "css": ["toolbar/toolbar.css", "toolbar/text.css", "toolbar/theme.css", "toolbar/translate.css", "toolbar/dictionary.css"],
-      "js": ["toolbar/toolbar.js"]
+      "css": ["toolbar/css/toolbar.css", "toolbar/css/dictionary.css", "toolbar/css/magnify.css", "toolbar/css/text.css", "toolbar/css/theme.css", "toolbar/css/translate.css"],
+      "js": ["toolbar/toolbar.js", "packages/html2canvas.js"]
     }
   ],
   "icons": {
@@ -19,18 +19,18 @@
   },
   "action": {
       "default_icon": "icons/icon16.png",
-      "default_popup": "popup.html",
+      "default_popup": "pages/popup.html",
       "default_title": "Detect image tags"
   },
   "permissions": [
       "storage"
   ],
   "background": {
-    "script": ["background.js", "jquery-3.7.1.min.js"]
+    "script": [""]
   },
   "web_accessible_resources": [
 	{
-	  "resources": ["toolbar/assets/buttons/*", "toolbar/scripts/*.js", "toolbar/assets/languages/supported_languages.json"],
+	  "resources": ["toolbar/assets/buttons/*", "toolbar/scripts/*.js", "toolbar/assets/languages/supported_languages.json", "packages/html2canvas.js"],
 	  "matches": ["<all_urls>"]
 	}
   ]
