@@ -1,5 +1,5 @@
-# Accessibility Toolbar Prototype.
-A simple prototype for an accessibility toolbar.
+# Accessibility Toolbar.
+A free to use accessibility toolbar.
 
 # Table of contents
 • Introduction<br>
@@ -8,7 +8,7 @@ A simple prototype for an accessibility toolbar.
 • More
 
 # Introduction
-This project demonstrates a minimally functional (few features) prototype for an acessibility toolbar extension for Google Chrome. Currently, the only available features are page translation, text modification and theme changing - with minimal UI.
+This project demonstrates foundation for an acessibility toolbar extension for Google Chrome. All features available and how they are used are described in the Usage section.
 
 # Installation
 The extension can be loaded into Chrome through the packed extension or unpacked extension. Steps are listed below for both. Steps for back-end set up are listed below. The back-end currently runs on Python 3.12.
@@ -25,6 +25,9 @@ The extension can be loaded into Chrome through the packed extension or unpacked
 # Usage
 The toolbar will display at the bottom of every web page in a fixed position, all current functionality is listed below.
 
+## Play
+The purple button with the alt-text `Play` can be pressed to enable Text-To-Speech (TTS) functionality across the webpage. Clicking on `Start TTS` will allow you to read text as you select it, dynamically updating as you select text, while `Read Selected` reads out what you currently have selected on the page. This works across languages.
+
 ## Text Modification
 The blue button with the alt-text `Text` can be pressed to enable text modification across the webpage. This feature modifies Font Face, Font Colour (both of which can be reset), Font Size, Line Height and Character Spacing.<br>
 
@@ -35,16 +38,23 @@ The green button with the alt-text `Theme` can be pressed to enable theme modifi
 
 `Theme Default` will reset the page its default colours, whereas all other buttons will change the look of the page. `Theme Black` will also change the font colour of the page to white to accommodate the new background.<br>
 
-This feature will be expanded to further themes in the future. The `Custom Colour` button is currently non-functional.
+## Dictionary
+The pink button with the alt-text `Dictionary` can be pressed to look up a word and its definition, pronunciation, synonyms, antonyms and examples from its wiktionary entry. This can be done either with the search bar or through the current selected word with the `Search Word` and `Search Selected` buttons. This requires the back-end to be activated for use.
 
 ## Translate
 The red button with the alt-text `Translate` can be pressed to translate an entire webpage. This feature gathers all text nodes on the page and sends them to the back-end in order to translate the text and is then returned to the front-end. The `Default Language` button can be pressed to reset the page language.<br>
 
-## Dictionary
-The pink button with the alt-text `Dictionary` can be pressed to look up a word and its definition, pronunciation, synonyms, antonyms and examples from its wiktionary entry. This can be done either with the search bar or through the current selected word with the `Search Word` and `Search Selected` buttons. This requires the back-end to be activated for use.
+## Magnifying Glass
+The cyan button with the alt-text `Magnify` can be pressed to enable a magnifying glass. Options `zoom` and `size` are provided to modify the zoom multiplier and the affected page area respectively. On clicking `Show Magnifier`, a magnifying glass will display that follows your mouse, akin to a real magnifying glass.
+
+## Image Classification
+If enabled in the settings (it will be by default), whenever hovering over an image, a button reading `Generate alt-text` will appear. Upon clicking this button, the selected image will be classified and you will receive image classifications along with their corresponding confidence values.
+
+## Manual
+The grey button with the alt-text `Manual` will bring you to the page you are reading right now.
+
+## Settings
+The grey button with the alt-text `Settings` will bring you to the settings page. From here, you can enable and disable both the toolbar and the image classifier. In order to see these changes applied, you must refresh the current web page.
 
 ## Hide Toolbar
 The grey button with the alt-text `Hide` can be pressed to hide the toolbar. This will collapse the overall toolbar, closing all open menus and replacig the toolbar with a button in the middle of the page with the alt-text `Show Toolbar`, used to re-open the toolbar.
-
-# More
-Licensing, Credits, Troubleshooting to be added.

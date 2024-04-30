@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accessibility Manual</title>
+    <link rel="stylesheet" type="text/css" href="css/manual.css">
+</head>
+<body>
+        <div id="T-EXT-manual">
+            <h1>Accessibility Manual</h1>
+            <h2>Accessibility Toolbar.</h2>
+            <p>A free to use accessibility toolbar.</p>
+
+            <h2>Table of contents</h2>
+            <ul>
+                <li>Introduction</li>
+                <li>Installation</li>
+                <li>Usage</li>
+                <li>More</li>
+            </ul>
+
+            <h2>Introduction</h2>
+            <p>This project demonstrates foundation for an accessibility toolbar extension for Google Chrome. All features available and how they are used are described in the Usage section.</p>
+
+            <h2>Installation</h2>
+            <p>The extension can be loaded into Chrome through the packed extension or unpacked extension. Steps are listed below for both. Steps for back-end set up are listed below. The back-end currently runs on Python 3.12.</p>
+
+            <h3>Packed Extension</h3>
+            <p>By navigating to <code>chrome://extensions</code> on your browser, you can drop the <code>chrome-extension.crx</code> file onto the UI to install the extension. This should add the extension <code>Accessibility Toolbar 1.0</code> to your browser.</p>
+
+            <h3>Unpacked Extension</h3>
+            <p>By navigating to <code>chrome://extensions</code> on your browser and enabling <code>Developer mode</code> (top right), you can click on <code>Load unpacked</code> at the top left corner of the screen, you can load the extension into Chrome by selecting the <code>/chrome-extension</code> directory and clicking select folder. This should add the extension <code>Accessibility Toolbar 1.0</code> to your browser.</p>
+
+            <h3>Back-end set-up</h3>
+            <p>To enable the back-end for translation/dictionary use, you must first install the necessary packages through the <code>/requirements.txt</code> file using Python with the command <code>pip install -r requirements.txt</code> in your terminal. From there, you can simply run the command <code>python manage.py runserver</code> and the page translation/dictionary features shall become functional. This can also be done through <code>#setup.bat</code> for first time use, and the server may be run with <code>#run.bat</code> from then on. If you are a Linux user you MUST run <code>sudo apt-get update && apt-get install ffmpeg libsm6 libxext6 -y</code> for all the required packages to work.</p>
+
+            <h2>Usage</h2>
+            <p>The toolbar will display at the bottom of every web page in a fixed position, all current functionality is listed below.</p>
+
+            <h3>Play</h3>
+            <p>The purple button with the alt-text <code>Play</code> can be pressed to enable Text-To-Speech (TTS) functionality across the webpage. Clicking on <code>Start TTS</code> will allow you to read text as you select it, dynamically updating as you select text, while <code>Read Selected</code> reads out what you currently have selected on the page. This works across languages.</p>
+
+            <h3>Text Modification</h3>
+            <p>The blue button with the alt-text <code>Text</code> can be pressed to enable text modification across the webpage. This feature modifies Font Face, Font Colour (both of which can be reset), Font Size, Line Height and Character Spacing.</p>
+
+            <p>Font Size and Line Height are scaled by a factor of 10% in either direction, whereas Character Spacing is modified by 0.2px in either direction.</p>
+
+            <h3>Theme Modification</h3>
+            <p>The green button with the alt-text <code>Theme</code> can be pressed to enable theme modification across the webpage. This feature modifies the overall theme (colour) of a webpage by applying a colour filter based on HSL levels.</p>
+
+            <p><code>Theme Default</code> will reset the page its default colours, whereas all other buttons will change the look of the page. <code>Theme Black</code> will also change the font colour of the page to white to accommodate the new background.</p>
+
+            <h3>Dictionary</h3>
+            <p>The pink button with the alt-text <code>Dictionary</code> can be pressed to look up a word and its definition, pronunciation, synonyms, antonyms and examples from its wiktionary entry. This can be done either with the search bar or through the current selected word with the <code>Search Word</code> and <code>Search Selected</code> buttons. This requires the back-end to be activated for use.</p>
+
+            <h3>Translate</h3>
+            <p>The red button with the alt-text <code>Translate</code> can be pressed to translate an entire webpage. This feature gathers all text nodes on the page and sends them to the back-end in order to translate the text and is then returned to the front-end. The <code>Default Language</code> button can be pressed to reset the page language.</p>
+
+            <h3>Magnifying Glass</h3>
+            <p>The cyan button with the alt-text <code>Magnify</code> can be pressed to enable a magnifying glass. Options <code>zoom</code> and <code>size</code> are provided to modify the zoom multiplier and the affected page area respectively. On clicking <code>Show Magnifier</code>, a magnifying glass will display that follows your mouse, akin to a real magnifying glass.</p>
+
+            <h3>Image Classification</h3>
+            <p>If enabled in the settings (it will be by default), whenever hovering over an image, a button reading <code>Generate alt-text</code> will appear. Upon clicking this button, the selected image will be classified and you will receive image classifications along with their corresponding confidence values.</p>
+
+            <h3>Manual</h3>
+            <p>The grey button with the alt-text <code>Manual</code> will bring you to the page you are reading right now.</p>
+
+            <h3>Settings</h3>
+            <p>The grey button with the alt-text <code>Settings</code> will bring you to the settings page. From here, you can enable and disable both the toolbar and the image classifier. In order to see these changes applied, you must refresh the current web page.</p>
+
+            <h3>Hide Toolbar</h3>
+            <p>The grey button with the alt-text <code>Hide</code> can be pressed to hide the toolbar. This will collapse the overall toolbar, closing all open menus and replacing the toolbar with a button in the middle of the page with the alt-text <code>Show Toolbar</code>, used to re-open the toolbar.</p>
+
+            <h2>More</h2>
+            <p>Licensing, Credits, Troubleshooting to be added.</p>
+        </div>
+</body>
+</html>

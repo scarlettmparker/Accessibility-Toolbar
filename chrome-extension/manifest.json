@@ -8,7 +8,7 @@
       "matches": [
         "<all_urls>"
       ],
-      "css": ["toolbar/css/toolbar.css", "toolbar/css/dictionary.css", "toolbar/css/magnify.css", "toolbar/css/text.css", "toolbar/css/theme.css", "toolbar/css/translate.css"],
+      "css": ["toolbar/css/toolbar.css", "toolbar/css/dictionary.css", "toolbar/css/magnify.css", "toolbar/css/text.css", "toolbar/css/theme.css", "toolbar/css/translate.css", "toolbar/css/play.css"],
       "js": ["toolbar/toolbar.js", "packages/html2canvas.js"]
     }
   ],
@@ -23,14 +23,15 @@
       "default_title": "Detect image tags"
   },
   "permissions": [
-      "storage"
+      "storage",
+      "tabs"
   ],
   "background": {
-    "script": [""]
+    "service_worker": "toolbar/background.js"
   },
   "web_accessible_resources": [
 	{
-	  "resources": ["toolbar/assets/buttons/*", "toolbar/scripts/*.js", "toolbar/assets/languages/supported_languages.json", "packages/html2canvas.js"],
+	  "resources": ["toolbar/assets/buttons/*", "toolbar/scripts/*.js", "toolbar/assets/languages/supported_languages.json", "packages/html2canvas.js", "pages/popup.html", "pages/manual.html"],
 	  "matches": ["<all_urls>"]
 	}
   ]

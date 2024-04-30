@@ -2,10 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Testing Extension</title>
-    <script src="popup.js"></script>
+    <title>Accessibility Settings</title>
+    <link rel="stylesheet" type="text/css" href="css/popup.css">
 </head>
 <body>
-    <text>Hello awesome!</text>
+    <center>
+        <div id="T-EXT-settings">
+            <label>
+                <input type="checkbox" id="useClassifier" name="useClassifier">
+                Use Classifier
+            </label>
+            <br><br>
+            <label>
+                <input type="checkbox" id="displayToolbar" name="displayToolbar">
+            Display Toolbar
+            </label>
+            <br><br>
+            <label><font color="red">You will have to refresh the page to see changes.</font></label>
+        </div>
+        <script src="popup.js"></script>
+    </center>
 </body>
 </html>

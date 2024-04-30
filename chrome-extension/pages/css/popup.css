@@ -1,0 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
+#T-EXT-settings {
+    font-family: "Inter", sans-serif;
+    height: 135px;
+    width: 130px;
+    font-size: 14px;
+    margin-top: 18px;
+}

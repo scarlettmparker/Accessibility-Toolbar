@@ -80,7 +80,7 @@
 	font-family: "Inter", sans-serif;
 	font-size: 28px;
 	color: white;
-	background-color: #4E9ADF;
+	background-color: #4E4E4E;
 	width: 40px;
 	height: 40px;
 	border: none;
@@ -88,7 +88,7 @@
 }
 
 .T-EXT-text-button:hover {
-	background-color: #3377b5;
+	background-color: #232323;
 }
 
 .T-EXT-text-dropdown {
